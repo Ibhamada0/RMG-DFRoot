@@ -1,0 +1,2 @@
+Original: diabl0w/DFRoot c274137e8c02b4f94f64d1b132d991b80c747340
+ExploitRunner, JNI, bootstrap and kernel module unchanged.
