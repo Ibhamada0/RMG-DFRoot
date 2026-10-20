@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="Theme.RMG.Obsidian" parent="android:Theme.Material">
+    <item name="rmgBg">#070D19</item>
+    <item name="rmgPanel">#101B2D</item>
+    <item name="rmgCardAlt">#1D314B</item>
+    <item name="rmgConsole">#0A1221</item>
+    <item name="rmgBorder">#253852</item>
+    <item name="rmgCyan">#52E6E0</item>
+    <item name="rmgIce">#A9F2F5</item>
+    <item name="rmgText">#F5F9FF</item>
+    <item name="rmgSecondary">#C3D3E5</item>
+    <item name="rmgMuted">#96AFC9</item>
+    <item name="rmgTerminal">#9DE8D7</item>
+    <item name="rmgGood">#7CE5B7</item>
+    <item name="rmgWarning">#FFCF86</item>
+    <item name="rmgError">#FF91A1</item>
+    <item name="android:colorAccent">#52E6E0</item>
+    <item name="android:windowBackground">#070D19</item>
+    <item name="android:statusBarColor">#070D19</item>
+    <item name="android:navigationBarColor">#070D19</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+  <style name="Theme.RMG.Aurora" parent="android:Theme.Material">
+    <item name="rmgBg">#0D0918</item>
+    <item name="rmgPanel">#18112C</item>
+    <item name="rmgCardAlt">#32234A</item>
+    <item name="rmgConsole">#110F24</item>
+    <item name="rmgBorder">#4B356D</item>
+    <item name="rmgCyan">#BBA0FF</item>
+    <item name="rmgIce">#E4BFFF</item>
+    <item name="rmgText">#FBF8FF</item>
+    <item name="rmgSecondary">#D9CFEA</item>
+    <item name="rmgMuted">#B6A8D4</item>
+    <item name="rmgTerminal">#9FEBD4</item>
+    <item name="rmgGood">#A8F1C8</item>
+    <item name="rmgWarning">#FFD28B</item>
+    <item name="rmgError">#FF98B3</item>
+    <item name="android:colorAccent">#BBA0FF</item>
+    <item name="android:windowBackground">#0D0918</item>
+    <item name="android:statusBarColor">#0D0918</item>
+    <item name="android:navigationBarColor">#0D0918</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+  <style name="Theme.RMG.Glacier" parent="android:Theme.Material">
+    <item name="rmgBg">#06121E</item>
+    <item name="rmgPanel">#0B2030</item>
+    <item name="rmgCardAlt">#17394C</item>
+    <item name="rmgConsole">#071923</item>
+    <item name="rmgBorder">#28516A</item>
+    <item name="rmgCyan">#63C5FF</item>
+    <item name="rmgIce">#C2E8FF</item>
+    <item name="rmgText">#F5FCFF</item>
+    <item name="rmgSecondary">#C4DDEA</item>
+    <item name="rmgMuted">#94B6CA</item>
+    <item name="rmgTerminal">#9CDFF9</item>
+    <item name="rmgGood">#7DE3D9</item>
+    <item name="rmgWarning">#FFC58D</item>
+    <item name="rmgError">#FFA5AA</item>
+    <item name="android:colorAccent">#63C5FF</item>
+    <item name="android:windowBackground">#06121E</item>
+    <item name="android:statusBarColor">#06121E</item>
+    <item name="android:navigationBarColor">#06121E</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+  <style name="Theme.RMG.Ember" parent="android:Theme.Material">
+    <item name="rmgBg">#130D0C</item>
+    <item name="rmgPanel">#231917</item>
+    <item name="rmgCardAlt">#422B22</item>
+    <item name="rmgConsole">#1A1210</item>
+    <item name="rmgBorder">#554037</item>
+    <item name="rmgCyan">#FFA46B</item>
+    <item name="rmgIce">#FFD1AA</item>
+    <item name="rmgText">#FFF5EE</item>
+    <item name="rmgSecondary">#E7CAB9</item>
+    <item name="rmgMuted">#BC9681</item>
+    <item name="rmgTerminal">#FFBA93</item>
+    <item name="rmgGood">#9FE4AF</item>
+    <item name="rmgWarning">#FFD386</item>
+    <item name="rmgError">#FF9E9E</item>
+    <item name="android:colorAccent">#FFA46B</item>
+    <item name="android:windowBackground">#130D0C</item>
+    <item name="android:statusBarColor">#130D0C</item>
+    <item name="android:navigationBarColor">#130D0C</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+  <style name="Theme.RMG.Matrix" parent="android:Theme.Material">
+    <item name="rmgBg">#060E0D</item>
+    <item name="rmgPanel">#10221E</item>
+    <item name="rmgCardAlt">#1C3930</item>
+    <item name="rmgConsole">#071811</item>
+    <item name="rmgBorder">#295443</item>
+    <item name="rmgCyan">#92FF89</item>
+    <item name="rmgIce">#C7FFD0</item>
+    <item name="rmgText">#F2FFF5</item>
+    <item name="rmgSecondary">#C7E9D2</item>
+    <item name="rmgMuted">#99C9AF</item>
+    <item name="rmgTerminal">#AEFFBC</item>
+    <item name="rmgGood">#7BFFAE</item>
+    <item name="rmgWarning">#FFD66B</item>
+    <item name="rmgError">#FF9494</item>
+    <item name="android:colorAccent">#92FF89</item>
+    <item name="android:windowBackground">#060E0D</item>
+    <item name="android:statusBarColor">#060E0D</item>
+    <item name="android:navigationBarColor">#060E0D</item>
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:windowLightNavigationBar">false</item>
+  </style>
+  <style name="Theme.RMG.Heritage" parent="android:Theme.Material.Light">
+    <item name="rmgBg">#FFF8F0</item>
+    <item name="rmgPanel">#FFFFFF</item>
+    <item name="rmgCardAlt">#F1E7DD</item>
+    <item name="rmgConsole">#FFF1E0</item>
+    <item name="rmgBorder">#DED1C6</item>
+    <item name="rmgCyan">#925629</item>
+    <item name="rmgIce">#76502F</item>
+    <item name="rmgText">#261F1C</item>
+    <item name="rmgSecondary">#59514D</item>
+    <item name="rmgMuted">#73675F</item>
+    <item name="rmgTerminal">#75552C</item>
+    <item name="rmgGood">#1B7352</item>
+    <item name="rmgWarning">#8F5817</item>
+    <item name="rmgError">#AE3948</item>
+    <item name="android:colorAccent">#925629</item>
+    <item name="android:windowBackground">#FFF8F0</item>
+    <item name="android:statusBarColor">#FFF8F0</item>
+    <item name="android:navigationBarColor">#FFF8F0</item>
+    <item name="android:windowLightStatusBar">true</item>
+    <item name="android:windowLightNavigationBar">true</item>
+  </style>
+  <style name="Theme.DirtyFrag" parent="Theme.RMG.Obsidian" />
+</resources>

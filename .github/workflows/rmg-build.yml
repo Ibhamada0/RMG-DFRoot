@@ -1,0 +1,131 @@
+name: Build RMG on the original DFRoot engine
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'lkm/**'
+      - 'gradle/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-lkm:
+    name: Kernel module / ${{ matrix.kmi }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kmi:
+          - android12-5.10
+          - android13-5.10
+          - android13-5.15
+          - android14-5.15
+          - android14-6.1
+          - android15-6.6
+          - android16-6.12
+          - android17-6.18
+    container:
+      image: ghcr.io/ylarod/ddk-min:${{ matrix.kmi }}-20260828
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build original dfroot.ko
+        run: |
+          set -eu
+          cd lkm
+          make -j$(nproc)
+          llvm-objcopy --strip-unneeded \
+            -R .comment -R .note.gnu.build-id -R .note.gnu.property \
+            -R .note.Linux -R .note.GNU-stack \
+            -R .BTF -R .BTF.base -R .llvm_addrsig \
+            -R .hyp.text -R .hyp.bss -R .hyp.rodata \
+            -R .hyp.event_ids -R .hyp.patchable_function_entries \
+            -R .hyp.data dfroot.ko
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          cp dfroot.ko "$GITHUB_WORKSPACE/out/dfroot-${{ matrix.kmi }}.ko"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: df-lkm-${{ matrix.kmi }}
+          path: out/dfroot-${{ matrix.kmi }}.ko
+          if-no-files-found: error
+
+  android-apk:
+    needs: build-lkm
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+      - name: Install Android platform
+        run: |
+          sdkmanager --install "platforms;android-37" "build-tools;36.0.0"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: df-lkm-*
+          merge-multiple: true
+          path: app/src/main/jni/ko/
+
+      - name: Embed checked official Manager APKs for offline use
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p app/src/main/assets/managers
+          curl -fL --retry 3 -o app/src/main/assets/managers/ksu-next-v3.4.2.apk \
+             "https://github.com/KernelSU-Next/KernelSU-Next/releases/download/v3.4.2/KernelSU_Next_v3.4.2_33355-release.apk"
+          curl -fL --retry 3 -o app/src/main/assets/managers/ksu-samsung-v2.2.apk \
+             "https://github.com/diabl0w/KernelSU/releases/download/samsung-v2.2/KernelSU_samsung-v2.2_32687-release.apk"
+          echo "774a5511f7034a4930e881114e202319cbdc34c5aaaa5c7c6b6d2902364e4c58  app/src/main/assets/managers/ksu-next-v3.4.2.apk" | sha256sum -c -
+          echo "761dffad54ae080a4977971db7b04e2fc65c2d9b5e2336accca4a85661290a69  app/src/main/assets/managers/ksu-samsung-v2.2.apk" | sha256sum -c -
+
+      - name: Assemble RMG with original root engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:assembleDebug --stacktrace
+          APK="$(find app/build/outputs/apk/debug -name '*.apk' -type f | head -1)"
+          test -s "$APK"
+          cp "$APK" RMG-Original-DFRoot.apk
+          unzip -t RMG-Original-DFRoot.apk | tail -1
+          sha256sum RMG-Original-DFRoot.apk > RMG-Original-DFRoot.apk.sha256
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RMG-original-APK
+          path: |
+            RMG-Original-DFRoot.apk
+            RMG-Original-DFRoot.apk.sha256
+          if-no-files-found: error
+
+      - name: Publish experimental GitHub release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: original-rmg-build-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: RMG / Original DFRoot / Build ${{ github.run_number }}
+          prerelease: true
+          make_latest: false
+          body: |
+            Original diabl0w/DFRoot root engine at pinned upstream SHA
+            c274137e8c02b4f94f64d1b132d991b80c747340.
+            Native exploit, kernel module and manager selection logic not modified.
+
+            RMG six themes and embedded verified offline SU Manager downloads.
+            **Experimental:** not tested on SM-S918N physical hardware.
+            APK is signed with the default Android debug key, not release signing.
+            Back up your data before installing or attempting root.
+          files: |
+            RMG-Original-DFRoot.apk
+            RMG-Original-DFRoot.apk.sha256

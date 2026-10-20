@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <attr name="rmgBg" format="color" />
+  <attr name="rmgPanel" format="color" />
+  <attr name="rmgCardAlt" format="color" />
+  <attr name="rmgConsole" format="color" />
+  <attr name="rmgBorder" format="color" />
+  <attr name="rmgCyan" format="color" />
+  <attr name="rmgIce" format="color" />
+  <attr name="rmgText" format="color" />
+  <attr name="rmgSecondary" format="color" />
+  <attr name="rmgMuted" format="color" />
+  <attr name="rmgTerminal" format="color" />
+  <attr name="rmgGood" format="color" />
+  <attr name="rmgWarning" format="color" />
+  <attr name="rmgError" format="color" />
+</resources>

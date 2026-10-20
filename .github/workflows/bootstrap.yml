@@ -1,0 +1,42 @@
+name: Import pinned original DFRoot and apply RMG UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'rmg/**'
+      - '.github/workflows/bootstrap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout the user's new repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Clone the untouched original engine (pinned commit)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -e app/src/main/java/df/root/ExploitRunner.java ]; then
+            echo "Already imported, skipping."
+            exit 0
+          fi
+          git clone https://github.com/diabl0w/DFRoot.git "$RUNNER_TEMP/dfroot-original"
+          git -C "$RUNNER_TEMP/dfroot-original" checkout --detach c274137e8c02b4f94f64d1b132d991b80c747340
+          test "$(git -C "$RUNNER_TEMP/dfroot-original" rev-parse HEAD)" = c274137e8c02b4f94f64d1b132d991b80c747340
+          rsync -a --exclude '.git' --exclude '.github/' --exclude 'README.md' \
+             "$RUNNER_TEMP/dfroot-original/" ./
+          python3 rmg/port_original.py
+          git diff --check || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import unmodified original DFRoot engine and apply RMG UI/manager installer"
+          git push origin HEAD:main
