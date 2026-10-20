@@ -58,10 +58,10 @@ public final class RmgOfflineManagerInstaller {
             }
             Uri file=FileProvider.getUriForFile(activity,
                 activity.getPackageName()+".fileprovider",output);
-            Intent view=new Intent(Intent.ACTION_VIEW)
-                .setDataAndType(file,"application/vnd.android.package-archive")
-                .setClipData(ClipData.newRawUri("Verified official Manager",file))
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent view=new Intent(Intent.ACTION_VIEW);
+            view.setDataAndType(file,"application/vnd.android.package-archive");
+            view.setClipData(ClipData.newRawUri("Verified official Manager",file));
+            view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             activity.startActivity(view);
         }catch(Exception ex){
             Toast.makeText(activity,"Offline install error: "+ex.getMessage(),
