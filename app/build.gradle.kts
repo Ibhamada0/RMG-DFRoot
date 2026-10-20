@@ -10,7 +10,7 @@ if (signingPropsFile.exists()) signingProps.load(signingPropsFile.inputStream())
 
 android {
     namespace = "df.root"
-    compileSdk = 37
+    compileSdk = 36
 
     buildFeatures {
         buildConfig = true
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId = "df.root"
         minSdk = 32
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 406
         versionName = "4.6"
 
