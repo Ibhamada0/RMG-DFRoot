@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rmg_app_name">RMG</string>
+    <string name="rmg_appearance_name">RMG Appearance</string>
+    <string name="rmg_warning">Experimental root environment. Compatibility is not guaranteed.</string>
+</resources>
