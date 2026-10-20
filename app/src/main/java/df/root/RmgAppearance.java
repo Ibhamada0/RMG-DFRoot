@@ -16,7 +16,7 @@ public final class RmgAppearance {
         return (v>=0 && v<THEMES.length)?v:0;
     }
     public static void select(Context ctx,int index) {
-        if(index<0 || index>=THEMES.length)throw new IllegalArgumentException("Invalid RMG theme");
+        if(index<0 || index>=THEMES.length)throw new IllegalArgumentException("Invalid RMP theme");
         ctx.getSharedPreferences("rmg_appearance",Context.MODE_PRIVATE)
             .edit().putInt("selected",index).apply();
     }

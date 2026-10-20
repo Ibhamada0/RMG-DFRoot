@@ -18,6 +18,6 @@
         android:summary="Turn this on if a broken module is crashing your device. The next run will launch with all modules disabled."
         android:defaultValue="false" />
 
-    <Preference android:key="rmg_appearance" android:title="RMG Appearance" android:summary="Choose six RMG themes"/>
+    <Preference android:key="rmg_appearance" android:title="RMP Appearance" android:summary="Choose six RMP themes"/>
     <Preference android:key="rmg_install" android:title="Install SU Manager offline" android:summary="Install official verified Manager APK, Android approval required"/>
 </PreferenceScreen>

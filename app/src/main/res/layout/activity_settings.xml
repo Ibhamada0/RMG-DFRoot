@@ -4,7 +4,7 @@
     android:orientation="vertical" android:background="?attr/rmgBg"
     android:paddingTop="16dp" android:paddingStart="18dp" android:paddingEnd="18dp">
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="6dp" android:text="PREFERENCES / RMG"
+        android:layout_marginTop="6dp" android:text="PREFERENCES / RMP"
         android:letterSpacing="0.13" android:textColor="?attr/rmgIce"
         android:textSize="12sp" android:fontFamily="sans-serif-medium"/>
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"

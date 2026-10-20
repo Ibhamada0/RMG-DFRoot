@@ -31,7 +31,7 @@ public final class RmgOfflineManagerInstaller {
     private static void install(Activity activity,int index) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O &&
             !activity.getPackageManager().canRequestPackageInstalls()) {
-            Toast.makeText(activity,"Allow RMG to install apps, then tap Install again.",
+            Toast.makeText(activity,"Allow RMP to install apps, then tap Install again.",
                 Toast.LENGTH_LONG).show();
             activity.startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                 Uri.parse("package:"+activity.getPackageName())));

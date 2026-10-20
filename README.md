@@ -1,36 +1,36 @@
-# RMG — Premium Android Control Center
+# RMP — Root Management Pro
 
 [![Latest Release](https://img.shields.io/github/v/release/Ibhamada0/RMG-DFRoot?label=Latest%20Release)](https://github.com/Ibhamada0/RMG-DFRoot/releases/latest)
 [![Build Status](https://github.com/Ibhamada0/RMG-DFRoot/actions/workflows/rmg-build.yml/badge.svg)](https://github.com/Ibhamada0/RMG-DFRoot/actions/workflows/rmg-build.yml)
 
-### 📱 Download RMG APK
+### 📱 Download RMP APK
 
-**[⬇️ Download Latest RMG APK — GitHub Releases](https://github.com/Ibhamada0/RMG-DFRoot/releases/latest)**
+**[⬇️ Download Latest RMP APK — GitHub Releases](https://github.com/Ibhamada0/RMG-DFRoot/releases/latest)**
 
-Open the latest release above and download `RMG-Original-DFRoot.apk` under **Assets**. This is a GitHub Release on the repository home page, **not** a temporary Actions artifact or signing-key file. SHA-256 is included alongside the APK.
+Open the latest release above and download `RMP-Original-DFRoot.apk` under **Assets**. This is a GitHub Release on the repository home page, **not** a temporary Actions artifact or signing-key file. SHA-256 is included alongside the APK.
 
 > **Experimental and debug-signed.** Successful compilation is not proof of root support on your firmware. An APK signed with the default debug key cannot necessarily update a differently signed install. Back up your device.
 
-## About RMG / original DFRoot engine
+## About RMP / original DFRoot engine
 
 **Owner:** [Ibhamada0](https://github.com/Ibhamada0)  
 **Upstream source:** [diabl0w/DFRoot](https://github.com/diabl0w/DFRoot) at
 `c274137e8c02b4f94f64d1b132d991b80c747340`
 
 This is an independently created derivative repository (not a formal GitHub network Fork).
-The RMG port uses the original DFRoot source and preserves its `ExploitRunner.java`,
+The RMP port uses the original DFRoot source and preserves its `ExploitRunner.java`,
 `app/src/main/jni/` native exploit, `lkm/` kernel module, and upstream manager
 selection code without changes.
 
-### RMG customizations
+### RMP customizations
 
 The main screen is a fully redesigned **Premium Control Center** with a
 status hero, SU Manager selection, progress feedback, quick access to Settings
 and offline installation, device model/build/kernel/SELinux diagnostics, and
 a copyable live console. All six existing themes style the complete dashboard.
 
-- Application display name **RMG**.
-- **Six themes**: Obsidian, Aurora, Glacier, Ember, Matrix, RMG Heritage (warm ivory).
+- Application display name **RMP**.
+- **Six themes**: Obsidian, Aurora, Glacier, Ember, Matrix, RMP Heritage (warm ivory).
 - **Appearance** item in Settings saves and applies the chosen theme.
 - **Install SU Manager offline** installs the selected verified official Manager APK via the Android installer: KernelSU Next v3.4.2 or diabl0w KernelSU Samsung v2.2.
 - Original DFRoot SU manager selector remains the source of the active manager preference. Select a compatible installed manager in the original main-screen spinner. Installing a Manager is not proof its daemon/kernel module will function on this device.

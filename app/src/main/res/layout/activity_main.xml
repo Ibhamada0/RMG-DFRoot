@@ -12,18 +12,18 @@
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center_vertical" android:orientation="horizontal">
-          <TextView android:layout_width="52dp" android:layout_height="52dp"
-              android:background="@drawable/rmg_logo_bg" android:gravity="center"
-              android:text="R" android:textColor="?attr/rmgBg" android:textSize="30sp"
-              android:fontFamily="sans-serif-black"/>
+          <ImageView android:layout_width="52dp" android:layout_height="52dp"
+              android:background="@drawable/rmg_logo_bg"
+              android:src="@drawable/ic_launcher_foreground"
+              android:padding="1dp" android:contentDescription="@string/app_name"/>
           <LinearLayout android:layout_width="0dp" android:layout_weight="1"
               android:layout_height="wrap_content" android:layout_marginStart="12dp"
               android:orientation="vertical">
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="RMG" android:textColor="?attr/rmgText" android:textSize="24sp"
+                android:text="RMP" android:textColor="?attr/rmgText" android:textSize="24sp"
                 android:fontFamily="sans-serif-black" android:letterSpacing="0.08"/>
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="ROOT MANAGEMENT GALAXY" android:textColor="?attr/rmgMuted"
+                android:text="ROOT MANAGEMENT PRO" android:textColor="?attr/rmgMuted"
                 android:textSize="9sp" android:letterSpacing="0.13"/>
           </LinearLayout>
           <TextView android:id="@+id/btnSettings" android:layout_width="48dp"
@@ -152,7 +152,7 @@
             android:background="@drawable/rmg_console_bg" android:padding="14dp" android:fillViewport="true">
           <TextView android:id="@+id/outputView" android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="&gt; RMG session initialized.&#10;&gt; Awaiting user action."
+              android:text="&gt; RMP session initialized.&#10;&gt; Awaiting user action."
               android:textColor="?attr/rmgTerminal" android:textSize="12sp"
               android:fontFamily="monospace" android:lineSpacingExtra="4dp"
               android:textIsSelectable="true"/>
@@ -161,7 +161,7 @@
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="28dp" android:gravity="center"
-            android:text="RMG  •  EXPERIMENTAL ROOT TOOL  •  BACK UP YOUR DEVICE"
+            android:text="RMP  •  EXPERIMENTAL ROOT TOOL  •  BACK UP YOUR DEVICE"
             android:textColor="?attr/rmgMuted" android:textSize="10sp"
             android:letterSpacing="0.05"/>
       </LinearLayout>

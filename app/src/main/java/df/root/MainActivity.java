@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements IReporter {
                 (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             if (manager != null) {
                 manager.setPrimaryClip(ClipData.newPlainText(
-                    "RMG session logs", outputView.getText().toString()));
+                    "RMP session logs", outputView.getText().toString()));
                 Toast.makeText(this, "Console copied", Toast.LENGTH_SHORT).show();
             }
         });

@@ -1,4 +1,4 @@
-name: Build RMG on the original DFRoot engine
+name: Build RMP on the original DFRoot engine
 
 on:
   push:
@@ -88,7 +88,7 @@ jobs:
           echo "774a5511f7034a4930e881114e202319cbdc34c5aaaa5c7c6b6d2902364e4c58  app/src/main/assets/managers/ksu-next-v3.4.2.apk" | sha256sum -c -
           echo "761dffad54ae080a4977971db7b04e2fc65c2d9b5e2336accca4a85661290a69  app/src/main/assets/managers/ksu-samsung-v2.2.apk" | sha256sum -c -
 
-      - name: Assemble RMG with original root engine
+      - name: Assemble RMP with original root engine
         shell: bash
         run: |
           set -euo pipefail
@@ -96,25 +96,25 @@ jobs:
           ./gradlew :app:assembleDebug --stacktrace
           APK="$(find app/build/outputs/apk/debug -name '*.apk' -type f | head -1)"
           test -s "$APK"
-          cp "$APK" RMG-Original-DFRoot.apk
-          unzip -t RMG-Original-DFRoot.apk | tail -1
-          sha256sum RMG-Original-DFRoot.apk > RMG-Original-DFRoot.apk.sha256
+          cp "$APK" RMP-Original-DFRoot.apk
+          unzip -t RMP-Original-DFRoot.apk | tail -1
+          sha256sum RMP-Original-DFRoot.apk > RMP-Original-DFRoot.apk.sha256
 
       - uses: actions/upload-artifact@v4
         with:
-          name: RMG-original-APK
+          name: RMP-original-APK
           path: |
-            RMG-Original-DFRoot.apk
-            RMG-Original-DFRoot.apk.sha256
+            RMP-Original-DFRoot.apk
+            RMP-Original-DFRoot.apk.sha256
           if-no-files-found: error
 
       - name: Publish visible GitHub Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: original-rmg-build-${{ github.run_number }}
+          tag_name: rmp-build-${{ github.run_number }}
           target_commitish: ${{ github.sha }}
-          name: RMG v4.7 | Premium Control Center | Build ${{ github.run_number }}
+          name: RMP v4.8 | Premium Control Center | Build ${{ github.run_number }}
           prerelease: false
           make_latest: true
           draft: false
@@ -123,7 +123,7 @@ jobs:
             c274137e8c02b4f94f64d1b132d991b80c747340.
             Native exploit, kernel module and manager selection logic not modified.
 
-            ## RMG / Premium Control Center
+            ## RMP / Premium Control Center
 
             Six coordinated premium themes, redesigned root-session dashboard,
             real-time device/SELinux information, native manager selection,
@@ -134,5 +134,5 @@ jobs:
             APK is signed with the default Android debug key, not release signing.
             Back up your data before installing or attempting root.
           files: |
-            RMG-Original-DFRoot.apk
-            RMG-Original-DFRoot.apk.sha256
+            RMP-Original-DFRoot.apk
+            RMP-Original-DFRoot.apk.sha256

@@ -5,7 +5,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:padding="22dp" android:orientation="vertical">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="RMG / APPEARANCE" android:textColor="?attr/rmgIce"
+            android:text="RMP / APPEARANCE" android:textColor="?attr/rmgIce"
             android:letterSpacing="0.15" android:textSize="12sp"/>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="16dp" android:text="Choose your experience"
@@ -13,7 +13,7 @@
             android:fontFamily="sans-serif-medium"/>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Six curated palettes for your RMG control center"
+            android:text="Six curated palettes for your RMP control center"
             android:textColor="?attr/rmgSecondary" android:textSize="14sp"/>
         <RadioGroup android:id="@+id/themeGroup" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="22dp"
@@ -41,7 +41,7 @@
                  android:textColor="?attr/rmgText" android:textSize="16sp" />
             <RadioButton android:id="@+id/themeHeritage" android:layout_width="match_parent"
                  android:layout_height="58dp" android:buttonTint="?attr/rmgCyan"
-                 android:text="RMG Heritage • Root My Galaxy inspired"
+                 android:text="RMP Heritage • Root My Galaxy inspired"
                  android:textColor="?attr/rmgText" android:textSize="16sp" />
         </RadioGroup>
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
