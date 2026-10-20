@@ -1,57 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootLayout"
-    android:background="?attr/rmgBg"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:id="@+id/rootLayout" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="?attr/rmgBg"
+    android:orientation="vertical" android:fitsSystemWindows="true">
 
-    <Spinner
-        android:id="@+id/spinnerSuManager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:background="@null"
-        android:overlapAnchor="false" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:clipToPadding="false" android:fillViewport="true">
+      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+          android:orientation="vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
+          android:paddingTop="20dp" android:paddingBottom="32dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="5">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center_vertical" android:orientation="horizontal">
+          <TextView android:layout_width="52dp" android:layout_height="52dp"
+              android:background="@drawable/rmg_logo_bg" android:gravity="center"
+              android:text="R" android:textColor="?attr/rmgBg" android:textSize="30sp"
+              android:fontFamily="sans-serif-black"/>
+          <LinearLayout android:layout_width="0dp" android:layout_weight="1"
+              android:layout_height="wrap_content" android:layout_marginStart="12dp"
+              android:orientation="vertical">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="RMG" android:textColor="?attr/rmgText" android:textSize="24sp"
+                android:fontFamily="sans-serif-black" android:letterSpacing="0.08"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="ROOT MANAGEMENT GALAXY" android:textColor="?attr/rmgMuted"
+                android:textSize="9sp" android:letterSpacing="0.13"/>
+          </LinearLayout>
+          <TextView android:id="@+id/btnSettings" android:layout_width="48dp"
+              android:layout_height="48dp" android:background="@drawable/rmg_card_bg"
+              android:gravity="center" android:text="⚙" android:textSize="23sp"
+              android:textColor="?attr/rmgIce" android:contentDescription="Open settings"
+              android:clickable="true" android:focusable="true"/>
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnRun"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:text="Launch Root" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:background="@drawable/rmg_hero_bg"
+            android:padding="22dp" android:orientation="vertical">
+          <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="SESSION CONTROL" android:textColor="?attr/rmgIce"
+                android:textSize="11sp" android:letterSpacing="0.17" android:fontFamily="sans-serif-medium"/>
+            <TextView android:id="@+id/tvStatusTag" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:background="@drawable/rmg_pill_bg"
+                android:text="STANDBY" android:textSize="10sp" android:textColor="?attr/rmgIce"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="7dp" android:paddingBottom="7dp"
+                android:fontFamily="sans-serif-medium"/>
+          </LinearLayout>
+          <TextView android:id="@+id/tvStatus" android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:layout_marginTop="24dp"
+              android:text="Ready when you are." android:textSize="28sp"
+              android:fontFamily="sans-serif-medium" android:textColor="?attr/rmgText"/>
+          <TextView android:id="@+id/tvStatusDetail" android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:layout_marginTop="10dp"
+              android:text="Choose a supported KernelSU Manager to continue."
+              android:textColor="?attr/rmgSecondary" android:textSize="13sp"
+              android:lineSpacingExtra="4dp"/>
+          <View android:layout_width="match_parent" android:layout_height="1dp"
+              android:layout_marginTop="26dp" android:layout_marginBottom="20dp"
+              android:background="?attr/rmgBorder"/>
+          <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_weight="1"
+                android:layout_height="wrap_content" android:text="DFRoot  /  ORIGINAL ENGINE"
+                android:textColor="?attr/rmgIce" android:textSize="10sp" android:letterSpacing="0.08"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="EXPERIMENTAL" android:textColor="?attr/rmgMuted" android:textSize="10sp"/>
+          </LinearLayout>
+        </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="26dp" android:gravity="center_vertical" android:orientation="horizontal">
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="ROOT ENGINE" android:textSize="14sp" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:letterSpacing="0.09"/>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="01 / SU MANAGER" android:textSize="10sp" android:textColor="?attr/rmgMuted"/>
+</LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/rmg_card_bg" android:elevation="0dp" android:orientation="vertical" android:padding="20dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="SELECTED SU MANAGER" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+        <Spinner android:id="@+id/spinnerSuManager" android:layout_width="match_parent"
+           android:layout_height="60dp" android:layout_marginTop="12dp"
+           android:background="@drawable/rmg_input_bg" android:paddingStart="8dp"
+           android:paddingEnd="8dp" android:spinnerMode="dropdown"/>
+        <TextView android:id="@+id/tvManagerHint" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:text="Only installed managers with a compatible ksud are shown."
+            android:textSize="12sp" android:lineSpacingExtra="3dp" android:textColor="?attr/rmgSecondary"/>
+        <Button android:id="@+id/btnRun" android:layout_width="match_parent"
+            android:layout_height="58dp" android:layout_marginTop="20dp"
+            android:background="@drawable/rmg_primary_button" android:text="LAUNCH ROOT"
+            android:textSize="15sp" android:textStyle="bold"
+            android:letterSpacing="0.07" android:textColor="?attr/rmgBg"
+            android:fontFamily="sans-serif-medium"/>
+        <ProgressBar android:id="@+id/progressRoot" style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="3dp" android:layout_marginTop="10dp"
+            android:indeterminate="true" android:indeterminateTint="?attr/rmgCyan"
+            android:visibility="gone"/>
+        <TextView android:id="@+id/btnOfflineManager" android:layout_width="match_parent"
+            android:layout_height="48dp" android:layout_marginTop="8dp" android:gravity="center"
+            android:text="INSTALL MANAGER OFFLINE  →" android:textColor="?attr/rmgIce"
+            android:textSize="12sp" android:textStyle="bold" android:clickable="true"
+            android:focusable="true" android:contentDescription="Open offline SU Manager installer"/>
+        </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/outputScroll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="26dp" android:gravity="center_vertical" android:orientation="horizontal">
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DEVICE INTELLIGENCE" android:textSize="14sp" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:letterSpacing="0.09"/>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="02 / LIVE DATA" android:textSize="10sp" android:textColor="?attr/rmgMuted"/>
+</LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/rmg_card_bg" android:elevation="0dp" android:orientation="vertical" android:padding="20dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+          <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="3dp">
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="DEVICE MODEL" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+<TextView android:id="@+id/tvDeviceModel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Detecting..." android:maxLines="2" android:ellipsize="end" android:textIsSelectable="true" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:textSize="14sp"/>
+</LinearLayout>
+          <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="3dp">
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="ANDROID" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+<TextView android:id="@+id/tvAndroidVersion" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="—" android:maxLines="2" android:ellipsize="end" android:textIsSelectable="true" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:textSize="14sp"/>
+</LinearLayout>
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+           android:layout_marginTop="19dp" android:layout_marginBottom="16dp" android:background="?attr/rmgBorder"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="BUILD FINGERPRINT" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+        <TextView android:id="@+id/tvDeviceBuild" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="—" android:maxLines="2" android:ellipsize="end" android:textIsSelectable="true" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:textSize="14sp"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+           android:layout_marginTop="19dp" android:layout_marginBottom="16dp" android:background="?attr/rmgBorder"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="KERNEL RELEASE" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+        <TextView android:id="@+id/tvKernel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="—" android:maxLines="2" android:ellipsize="end" android:textIsSelectable="true" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:textSize="14sp"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+           android:layout_marginTop="19dp" android:layout_marginBottom="16dp" android:background="?attr/rmgBorder"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="SELINUX ENFORCEMENT" android:textColor="?attr/rmgMuted" android:textSize="11sp" android:fontFamily="sans-serif-medium" android:letterSpacing="0.13"/>
+        <TextView android:id="@+id/tvSelinux" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:text="Checking..." android:maxLines="2" android:ellipsize="end" android:textIsSelectable="true" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:textSize="14sp"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/outputView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:textIsSelectable="true"
-            android:textSize="11sp"
-            android:textColor="?android:attr/textColorPrimary" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="26dp" android:gravity="center_vertical" android:orientation="horizontal">
+<TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LIVE CONSOLE" android:textSize="14sp" android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium" android:letterSpacing="0.09"/>
+<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="03 / SESSION LOGS" android:textSize="10sp" android:textColor="?attr/rmgMuted"/>
+</LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/rmg_card_bg" android:elevation="0dp" android:orientation="vertical" android:padding="20dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+          <TextView android:layout_width="0dp" android:layout_weight="1"
+              android:layout_height="wrap_content" android:text="●  OUTPUT STREAM"
+              android:textColor="?attr/rmgIce" android:textSize="11sp"
+              android:fontFamily="sans-serif-medium" android:letterSpacing="0.08"/>
+          <TextView android:id="@+id/btnCopyLogs" android:layout_width="wrap_content"
+              android:layout_height="40dp" android:paddingStart="14dp" android:paddingEnd="14dp"
+              android:gravity="center" android:background="@drawable/rmg_pill_bg"
+              android:text="COPY LOGS" android:textColor="?attr/rmgIce" android:textSize="10sp"
+              android:clickable="true" android:focusable="true"/>
+        </LinearLayout>
+        <ScrollView android:id="@+id/outputScroll" android:layout_width="match_parent"
+            android:layout_height="210dp" android:layout_marginTop="10dp"
+            android:background="@drawable/rmg_console_bg" android:padding="14dp" android:fillViewport="true">
+          <TextView android:id="@+id/outputView" android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="&gt; RMG session initialized.&#10;&gt; Awaiting user action."
+              android:textColor="?attr/rmgTerminal" android:textSize="12sp"
+              android:fontFamily="monospace" android:lineSpacingExtra="4dp"
+              android:textIsSelectable="true"/>
+        </ScrollView>
+        </LinearLayout>
 
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp" android:gravity="center"
+            android:text="RMG  •  EXPERIMENTAL ROOT TOOL  •  BACK UP YOUR DEVICE"
+            android:textColor="?attr/rmgMuted" android:textSize="10sp"
+            android:letterSpacing="0.05"/>
+      </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/settingsContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="?attr/rmgBg"
+    android:paddingTop="16dp" android:paddingStart="18dp" android:paddingEnd="18dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="6dp" android:text="PREFERENCES / RMG"
+        android:letterSpacing="0.13" android:textColor="?attr/rmgIce"
+        android:textSize="12sp" android:fontFamily="sans-serif-medium"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="14dp" android:text="Tailor your control"
+        android:textColor="?attr/rmgText" android:fontFamily="sans-serif-medium"
+        android:textSize="28sp"/>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" android:layout_marginBottom="22dp"
+        android:text="Personalize the interface, install a manager offline and configure boot behavior."
+        android:textColor="?attr/rmgSecondary" android:textSize="14sp"
+        android:lineSpacingExtra="4dp"/>
+    <FrameLayout android:id="@+id/settingsContainer" android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1"
+        android:background="@drawable/rmg_card_bg" android:padding="5dp"/>
+</LinearLayout>

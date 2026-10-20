@@ -108,22 +108,29 @@ jobs:
             RMG-Original-DFRoot.apk.sha256
           if-no-files-found: error
 
-      - name: Publish experimental GitHub release
+      - name: Publish visible GitHub Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: original-rmg-build-${{ github.run_number }}
           target_commitish: ${{ github.sha }}
-          name: RMG / Original DFRoot / Build ${{ github.run_number }}
-          prerelease: true
-          make_latest: false
+          name: RMG v4.7 | Premium Control Center | Build ${{ github.run_number }}
+          prerelease: false
+          make_latest: true
+          draft: false
           body: |
             Original diabl0w/DFRoot root engine at pinned upstream SHA
             c274137e8c02b4f94f64d1b132d991b80c747340.
             Native exploit, kernel module and manager selection logic not modified.
 
-            RMG six themes and embedded verified offline SU Manager downloads.
-            **Experimental:** not tested on SM-S918N physical hardware.
+            ## RMG / Premium Control Center
+
+            Six coordinated premium themes, redesigned root-session dashboard,
+            real-time device/SELinux information, native manager selection,
+            copyable logs and two SHA-256-verified offline SU Manager APKs.
+
+            **Experimental software:** not tested on SM-S918N physical hardware.
+            Successful APK compilation does not guarantee root compatibility.
             APK is signed with the default Android debug key, not release signing.
             Back up your data before installing or attempting root.
           files: |

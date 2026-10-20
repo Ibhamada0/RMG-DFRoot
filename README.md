@@ -1,4 +1,17 @@
-# RMG / original DFRoot engine
+# RMG — Premium Android Control Center
+
+[![Latest Release](https://img.shields.io/github/v/release/Ibhamada0/RMG-DFRoot?label=Latest%20Release)](https://github.com/Ibhamada0/RMG-DFRoot/releases/latest)
+[![Build Status](https://github.com/Ibhamada0/RMG-DFRoot/actions/workflows/rmg-build.yml/badge.svg)](https://github.com/Ibhamada0/RMG-DFRoot/actions/workflows/rmg-build.yml)
+
+### 📱 Download RMG APK
+
+**[⬇️ Download Latest RMG APK — GitHub Releases](https://github.com/Ibhamada0/RMG-DFRoot/releases/latest)**
+
+Open the latest release above and download `RMG-Original-DFRoot.apk` under **Assets**. This is a GitHub Release on the repository home page, **not** a temporary Actions artifact or signing-key file. SHA-256 is included alongside the APK.
+
+> **Experimental and debug-signed.** Successful compilation is not proof of root support on your firmware. An APK signed with the default debug key cannot necessarily update a differently signed install. Back up your device.
+
+## About RMG / original DFRoot engine
 
 **Owner:** [Ibhamada0](https://github.com/Ibhamada0)  
 **Upstream source:** [diabl0w/DFRoot](https://github.com/diabl0w/DFRoot) at
@@ -10,6 +23,12 @@ The RMG port uses the original DFRoot source and preserves its `ExploitRunner.ja
 selection code without changes.
 
 ### RMG customizations
+
+The main screen is a fully redesigned **Premium Control Center** with a
+status hero, SU Manager selection, progress feedback, quick access to Settings
+and offline installation, device model/build/kernel/SELinux diagnostics, and
+a copyable live console. All six existing themes style the complete dashboard.
+
 - Application display name **RMG**.
 - **Six themes**: Obsidian, Aurora, Glacier, Ember, Matrix, RMG Heritage (warm ivory).
 - **Appearance** item in Settings saves and applies the chosen theme.
@@ -24,7 +43,7 @@ APKs are fetched at **CI build time** (not checked into git) and embedded:
 No network access is needed for installing a bundled manager **from a built APK**. Android prompts for user permission to install. Developer builds that do not embed the assets will not support offline install.
 
 ### Build setup
-The bootstrap workflow clones the pinned upstream code and adds the UI overlay, committing the result to `main`. The build workflow compiles the original KMI kernel modules first and then the Android debug APK. Successful builds are published to **Releases** as prereleases. Debug-signed APKs are **not production-signed** and may not update apps with a different signature.
+The bootstrap workflow clones the pinned upstream code and adds the UI overlay, committing the result to `main`. The build workflow compiles the original KMI kernel modules first and then the Android debug APK. Successful builds are published as visible **GitHub Releases**, with the most recent build marked as **Latest**. Releases remain experimental even though the GitHub prerelease flag is disabled so the build appears in the repository's Releases section. Debug-signed APKs are **not production-signed** and may not update apps with a different signature.
 
 **Warning:** Android kernel exploit/root compatibility with Galaxy S23 Ultra SM-S918N and any specific firmware has **not been tested or verified**. Rooting may affect SELinux, security, device stability and data. Do not try without a backup and a recovery plan.
 
