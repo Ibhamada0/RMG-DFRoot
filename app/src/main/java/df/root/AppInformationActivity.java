@@ -230,6 +230,8 @@ public final class AppInformationActivity extends Activity {
             "No. It only shows the eight kernel-module families built by RMP's GitHub Actions. Device firmware and kernel security patches determine actual compatibility.");
         faq("Does RMP support KernelSU Classic and Next?",
             "RMP bundles offline installers for both. The original DFRoot selector lists installed Managers with a suitable libksud.so. Availability does not guarantee root success.");
+        faq("What happens if I tap Start with no Manager installed?",
+            "RMP shows the two bundled offline Manager choices. After you approve an install, it verifies the installed app and libksud.so, then continues your original Start request automatically. Canceling installation or using an incompatible build prevents launch.");
         faq("Why is my Manager missing from the list?",
             "The app only displays eligible installed apps that expose the ksud library expected by original DFRoot. An installed Manager may be an incompatible build.");
         faq("Can I install a Manager with no internet?",

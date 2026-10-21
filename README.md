@@ -34,6 +34,19 @@ Open the **information icon** in the home screen header, or go to
 - **FAQ:** expandable answers about KernelSU variants, root session markers,
   signing, updates, permissions and boot settings.
 
+### Smart Start — Manager installation assistance
+
+If no compatible SU Manager is installed, **Start** opens a choice between the
+two bundled offline Manager APKs. Android asks for installation approval; the
+app verifies the installed package and the same `libksud.so` check as original
+DFRoot. If verification succeeds, RMP selects the manager and **continues
+the same Start request automatically** without another tap.
+
+If installation is canceled, permission is denied, or the Manager is incompatible,
+no root session starts. You can return and tap Start again. Installation and root
+success are both dependent on the device and firmware; **this does not bypass
+Android's installer confirmation**. The native DFRoot exploit remains unchanged.
+
 ### Bottom navigation and session log history
 
 The fixed bottom bar provides four destinations: **Home, Info, History, Settings**.

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -21,18 +22,36 @@ public final class RmgOfflineManagerInstaller {
        "774a5511f7034a4930e881114e202319cbdc34c5aaaa5c7c6b6d2902364e4c58",
        "761dffad54ae080a4977971db7b04e2fc65c2d9b5e2336accca4a85661290a69"
     };
+    /** Result is checked by the calling Activity only after Android's installer returns. */
+    public interface InstallListener {
+        void onPermissionRequired(int managerIndex);
+        void onInstallerOpened(String packageName);
+    }
+
+    public static final int REQUEST_INSTALL = 6041;
+
     private RmgOfflineManagerInstaller(){}
-    public static void choose(Activity activity) {
+
+    public static void choose(Activity activity) { choose(activity, null); }
+
+    public static void choose(Activity activity, InstallListener listener) {
         new AlertDialog.Builder(activity).setTitle("Install official Manager (offline)")
+            .setMessage(listener == null
+                ? "Select the Manager to install. Android will ask for confirmation."
+                : "Choose a Manager. Once Android confirms a compatible installation, "
+                    + "RMP will automatically continue the Start request you just made.")
             .setItems(new String[]{"KernelSU Next v3.4.2","KernelSU Samsung v2.2"},
-                (dialog,index)->install(activity,index))
+                (dialog,index)->install(activity,index,listener))
             .setNegativeButton("Cancel",null).show();
     }
-    private static void install(Activity activity,int index) {
+
+    public static void install(Activity activity, int index, InstallListener listener) {
+        if (index < 0 || index >= NAMES.length) throw new IllegalArgumentException("Manager index");
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O &&
             !activity.getPackageManager().canRequestPackageInstalls()) {
             Toast.makeText(activity,"Allow RMP to install apps, then tap Install again.",
                 Toast.LENGTH_LONG).show();
+            if (listener != null) listener.onPermissionRequired(index);
             activity.startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                 Uri.parse("package:"+activity.getPackageName())));
             return;
@@ -56,13 +75,22 @@ public final class RmgOfflineManagerInstaller {
                 output.delete();
                 throw new SecurityException("SHA-256 verification failed");
             }
+            // Obtain package identity from the verified APK itself, not a guessed package name.
+            PackageInfo archive = activity.getPackageManager()
+                .getPackageArchiveInfo(output.getAbsolutePath(), 0);
+            if (archive == null || archive.packageName == null || archive.packageName.isEmpty())
+                throw new IllegalStateException("Invalid Manager package identity");
             Uri file=FileProvider.getUriForFile(activity,
                 activity.getPackageName()+".fileprovider",output);
             Intent view=new Intent(Intent.ACTION_VIEW);
             view.setDataAndType(file,"application/vnd.android.package-archive");
             view.setClipData(ClipData.newRawUri("Verified official Manager",file));
             view.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivity(view);
+            if (listener == null) activity.startActivity(view);
+            else {
+                activity.startActivityForResult(view, REQUEST_INSTALL);
+                listener.onInstallerOpened(archive.packageName);
+            }
         }catch(Exception ex){
             Toast.makeText(activity,"Offline install error: "+ex.getMessage(),
                 Toast.LENGTH_LONG).show();

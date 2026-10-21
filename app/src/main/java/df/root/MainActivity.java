@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,6 +58,27 @@ public class MainActivity extends Activity implements IReporter {
     private int mManagerCount = 0;
     private boolean mRunning = false;
     private volatile String mLogSessionId;
+    // Kept in memory only: reopening the app later must not unexpectedly run root.
+    private String mPendingManagerPackage;
+    private int mPendingPermissionIndex = -1;
+    private long mInstallRequestedAt;
+    private static final long INSTALL_FLOW_TIMEOUT_MS = 10 * 60 * 1000L;
+    private final RmgOfflineManagerInstaller.InstallListener mStartInstallListener =
+        new RmgOfflineManagerInstaller.InstallListener() {
+            @Override
+            public void onPermissionRequired(int managerIndex) {
+                mPendingPermissionIndex = managerIndex;
+            }
+
+            @Override
+            public void onInstallerOpened(String packageName) {
+                mPendingManagerPackage = packageName;
+                mInstallRequestedAt = SystemClock.elapsedRealtime();
+                showStatus("Waiting for Manager installation", "INSTALLING",
+                    "Confirm installation in Android. RMP will continue only if a compatible Manager is installed.",
+                    R.attr.rmgIce);
+            }
+        };
 
     @Override
     public void report(String msg) {
@@ -116,26 +138,25 @@ public class MainActivity extends Activity implements IReporter {
         });
 
         btnRun.setOnClickListener(v -> {
-            if (mRunning || mValidSuManagerPos < 1 || new File("/dev/df").exists()) {
+            if (mRunning || new File("/dev/df").exists()) {
                 updateRunButton();
                 return;
             }
-            String selectedManager = mDeCtx.getSharedPreferences(
-                ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE).getString(
-                    ExploitRunner.PREF_SU_MANAGER, "Unknown");
-            mLogSessionId = RmpSessionHistory.begin(this, selectedManager);
-            RmpSessionHistory.append(this, mLogSessionId,
-                "> Starting original DFRoot engine...\n");
-            mRunning = true;
-            btnRun.setEnabled(false);
-            btnRun.setText("RUNNING ORIGINAL DFROOT...");
-            progressRoot.setVisibility(View.VISIBLE);
-            showStatus("Executing session", "WORKING",
-                "DFRoot is running. Avoid rebooting while it is in progress.",
-                R.attr.rmgIce);
-            outputView.setText("> Starting original DFRoot engine...\n");
-            mExec.execute(this::runExploit);
+            if (mValidSuManagerPos < 1) {
+                if (mManagerCount == 0) {
+                    // Start is actionable even with no Manager. The system installer
+                    // still requires explicit Android approval.
+                    RmgOfflineManagerInstaller.choose(this, mStartInstallListener);
+                } else {
+                    Toast.makeText(this, "Select an installed SU Manager first.",
+                        Toast.LENGTH_LONG).show();
+                    spinnerSuManager.performClick();
+                }
+                return;
+            }
+            startRootSession();
         });
+
     }
 
     @Override
@@ -149,7 +170,115 @@ public class MainActivity extends Activity implements IReporter {
             refreshSelinux();
             loadManagers();
             updateRunButton();
+
+            if (mPendingPermissionIndex >= 0) {
+                final int chosen = mPendingPermissionIndex;
+                mPendingPermissionIndex = -1;
+                if (getPackageManager().canRequestPackageInstalls()) {
+                    mMain.post(() -> RmgOfflineManagerInstaller.install(
+                        this, chosen, mStartInstallListener));
+                } else {
+                    Toast.makeText(this, "Manager install permission was not granted.",
+                        Toast.LENGTH_LONG).show();
+                    updateRunButton();
+                }
+            } else if (mPendingManagerPackage != null) {
+                mMain.postDelayed(this::checkPendingManagerInstallation, 650);
+            }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RmgOfflineManagerInstaller.REQUEST_INSTALL) {
+            // Installer resultCode is not always reliable. Verify the actual installed
+            // application and its libksud.so instead of trusting RESULT_OK.
+            mMain.postDelayed(() -> {
+                checkPendingManagerInstallation();
+                // ACTION_VIEW can return RESULT_CANCELED even when the user
+                // installs successfully. Re-check Android's PackageManager.
+                // If it is still absent after a grace period, reset the flow.
+                if (mPendingManagerPackage != null) {
+                    mMain.postDelayed(() -> {
+                        checkPendingManagerInstallation();
+                        if (mPendingManagerPackage != null) {
+                            mPendingManagerPackage = null;
+                            Toast.makeText(this,
+                                "Installation was canceled or did not finish. Tap Start to try again.",
+                                Toast.LENGTH_LONG).show();
+                            updateRunButton();
+                        }
+                    }, 1200);
+                }
+            }, 950);
+        }
+    }
+
+    private void checkPendingManagerInstallation() {
+        String requested = mPendingManagerPackage;
+        if (requested == null || mRunning || isFinishing() || isDestroyed()) return;
+        if (SystemClock.elapsedRealtime() - mInstallRequestedAt > INSTALL_FLOW_TIMEOUT_MS) {
+            mPendingManagerPackage = null;
+            Toast.makeText(this, "Installer session expired. Tap Start to try again.",
+                Toast.LENGTH_LONG).show();
+            updateRunButton();
+            return;
+        }
+        ApplicationInfo installed;
+        try {
+            installed = getPackageManager().getApplicationInfo(requested, 0);
+        } catch (PackageManager.NameNotFoundException ignored) {
+            // Not installed or installation canceled. Never launch the root engine.
+            updateRunButton();
+            return;
+        }
+        if (!ExploitRunner.hasKsud(installed)) {
+            mPendingManagerPackage = null;
+            showStatus("Manager is not compatible", "CHECK MANAGER",
+                "Android installed the app, but DFRoot cannot find its required libksud.so. No root session was launched.",
+                R.attr.rmgWarning);
+            Toast.makeText(this, "Manager installed without a compatible ksud library.",
+                Toast.LENGTH_LONG).show();
+            updateRunButton();
+            return;
+        }
+
+        // The exact APK chosen by the user has been installed and passed the
+        // same eligibility check as original DFRoot's Manager selector.
+        mPendingManagerPackage = null;
+        mDeCtx.getSharedPreferences(ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE)
+            .edit().putString(ExploitRunner.PREF_SU_MANAGER, requested).apply();
+        loadManagers();
+        if (mValidSuManagerPos < 1 || new File("/dev/df").exists()) {
+            updateRunButton();
+            return;
+        }
+        Toast.makeText(this, "Manager verified. Continuing your Start request.",
+            Toast.LENGTH_LONG).show();
+        startRootSession();
+    }
+
+    private void startRootSession() {
+        if (mRunning || mValidSuManagerPos < 1 || new File("/dev/df").exists()) {
+            updateRunButton();
+            return;
+        }
+        String selectedManager = mDeCtx.getSharedPreferences(
+            ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE).getString(
+                ExploitRunner.PREF_SU_MANAGER, "Unknown");
+        mLogSessionId = RmpSessionHistory.begin(this, selectedManager);
+        RmpSessionHistory.append(this, mLogSessionId,
+            "> Starting original DFRoot engine...\n");
+        mRunning = true;
+        btnRun.setEnabled(false);
+        btnRun.setText("RUNNING ORIGINAL DFROOT...");
+        progressRoot.setVisibility(View.VISIBLE);
+        showStatus("Executing session", "WORKING",
+            "DFRoot is running. Avoid rebooting while it is in progress.",
+            R.attr.rmgIce);
+        outputView.setText("> Starting original DFRoot engine...\n");
+        mExec.execute(this::runExploit);
     }
 
     @Override
@@ -234,19 +363,27 @@ public class MainActivity extends Activity implements IReporter {
         if (mRunning) return;
         boolean active = new File("/dev/df").exists();
         boolean selected = mValidSuManagerPos >= 1;
-        btnRun.setEnabled(!active && selected);
+        boolean waiting = mPendingPermissionIndex >= 0 || mPendingManagerPackage != null;
+        btnRun.setEnabled(!active && !waiting);
         btnRun.setText(active ? "ROOT SESSION ACTIVE" :
-            selected ? "LAUNCH ROOT SESSION" : "SELECT A MANAGER TO START");
-        tvManagerHint.setText(mManagerCount == 0
-            ? "No compatible SU Manager detected. Use the offline installer below."
-            : mManagerCount + " compatible manager(s) detected. Select the one to use.");
+            waiting ? "FINISH MANAGER INSTALLATION" :
+            selected ? "LAUNCH ROOT SESSION" :
+            mManagerCount == 0 ? "START / INSTALL SU MANAGER" :
+            "SELECT A MANAGER TO START");
+        tvManagerHint.setText(waiting
+            ? "Finish Android installation first. Only a verified compatible Manager will continue."
+            : mManagerCount == 0
+                ? "No compatible Manager detected. Tap Start to choose and install one offline."
+                : mManagerCount + " compatible manager(s) detected. Select the one to use.");
         if (active) {
             showStatus("Root session found", "ACTIVE",
                 "DFRoot's /dev/df session marker is present. This does not independently verify SU permissions.",
                 R.attr.rmgGood);
         } else if (!selected) {
             showStatus("System on standby", "NOT ACTIVE",
-                "Choose a compatible installed SU Manager before launching the original DFRoot engine.",
+                mManagerCount == 0
+                    ? "Tap Start to pick a bundled SU Manager for offline installation."
+                    : "Choose a compatible installed SU Manager before launching the original DFRoot engine.",
                 R.attr.rmgWarning);
         } else {
             showStatus("Ready to launch", "READY",
