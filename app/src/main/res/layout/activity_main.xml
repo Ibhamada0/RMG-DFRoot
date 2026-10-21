@@ -26,6 +26,12 @@
                 android:text="ROOT MANAGEMENT PRO" android:textColor="?attr/rmgMuted"
                 android:textSize="9sp" android:letterSpacing="0.13"/>
           </LinearLayout>
+          <TextView android:id="@+id/btnInfo" android:layout_width="48dp"
+              android:layout_height="48dp" android:layout_marginEnd="9dp"
+              android:background="@drawable/rmg_card_bg" android:gravity="center"
+              android:text="&#x24D8;" android:textSize="22sp"
+              android:textColor="?attr/rmgIce" android:contentDescription="Application information"
+              android:clickable="true" android:focusable="true"/>
           <TextView android:id="@+id/btnSettings" android:layout_width="48dp"
               android:layout_height="48dp" android:background="@drawable/rmg_card_bg"
               android:gravity="center" android:text="⚙" android:textSize="23sp"

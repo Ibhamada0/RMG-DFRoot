@@ -15,6 +15,10 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        findPreference("rmp_information").setOnPreferenceClickListener(pref -> {
+            startActivity(new Intent(getActivity(), AppInformationActivity.class));
+            return true;
+        });
         findPreference("rmg_appearance").setOnPreferenceClickListener(p -> {
             startActivity(new Intent(getActivity(),RmgAppearanceActivity.class));return true;});
         findPreference("rmg_install").setOnPreferenceClickListener(p -> {

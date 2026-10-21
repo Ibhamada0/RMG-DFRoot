@@ -22,6 +22,18 @@ The RMP port uses the original DFRoot source and preserves its `ExploitRunner.ja
 `app/src/main/jni/` native exploit, `lkm/` kernel module, and upstream manager
 selection code without changes.
 
+### App Information, How to Use and FAQ
+
+Open the **information icon** in the home screen header, or go to
+**Settings → App Information**. The new center has three tabs:
+- **Kernel Targets:** eight KMI module build families from the CI build matrix,
+  plus your reported device kernel version. **A matching KMI does not guarantee
+  the device is vulnerable, compatible, or successfully rooted.**
+- **How to Use:** step-by-step safety and interface guidance, SU Manager selection,
+  offline installer and log interpretation.
+- **FAQ:** expandable answers about KernelSU variants, root session markers,
+  signing, updates, permissions and boot settings.
+
 ### RMP customizations
 
 The main screen is a fully redesigned **Premium Control Center** with a
