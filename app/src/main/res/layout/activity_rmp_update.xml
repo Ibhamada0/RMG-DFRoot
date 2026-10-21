@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="?attr/rmgBg"
+    android:fitsSystemWindows="true">
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="20dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:gravity="center_vertical" android:orientation="horizontal">
+                <TextView android:id="@+id/updateBack" android:layout_width="46dp"
+                    android:layout_height="46dp" android:gravity="center"
+                    android:background="@drawable/rmg_card_bg" android:text="&#x2190;"
+                    android:textSize="23sp" android:textColor="?attr/rmgIce"
+                    android:clickable="true" android:focusable="true"
+                    android:contentDescription="Return to settings"/>
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1"
+                    android:layout_height="wrap_content" android:orientation="vertical"
+                    android:layout_marginStart="14dp">
+                    <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="RMP / RELEASE CHANNEL"
+                        android:textColor="?attr/rmgMuted" android:textSize="10sp"
+                        android:letterSpacing="0.14"/>
+                    <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="App updates"
+                        android:textColor="?attr/rmgText" android:textSize="23sp"
+                        android:fontFamily="sans-serif-medium"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="26dp" android:padding="22dp"
+                android:orientation="vertical" android:background="@drawable/rmg_hero_bg">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="SIGNED RELEASES" android:textSize="11sp"
+                    android:letterSpacing="0.15" android:textColor="?attr/rmgIce"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="13dp" android:text="Update without losing your setup"
+                    android:textColor="?attr/rmgText" android:textSize="24sp"
+                    android:fontFamily="sans-serif-medium"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="Updates require the same Android signing certificate and package ID. RMP checks both before opening the system installer."
+                    android:textColor="?attr/rmgSecondary" android:textSize="13sp"
+                    android:lineSpacingExtra="4dp"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="17dp" android:padding="19dp"
+                android:background="@drawable/rmg_card_bg">
+                <TextView android:id="@+id/updateCurrent" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="INSTALLED RMP"
+                    android:textColor="?attr/rmgIce" android:textSize="12sp"/>
+                <TextView android:id="@+id/updateRelease" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="Checking latest release..."
+                    android:layout_marginTop="19dp" android:textColor="?attr/rmgText"
+                    android:textSize="16sp" android:lineSpacingExtra="5dp"/>
+                <TextView android:id="@+id/updateStatus" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="Connecting to GitHub..."
+                    android:layout_marginTop="17dp" android:textColor="?attr/rmgSecondary"
+                    android:textSize="13sp" android:lineSpacingExtra="3dp"/>
+                <ProgressBar android:id="@+id/updateProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent" android:layout_height="3dp"
+                    android:layout_marginTop="13dp" android:indeterminate="true"
+                    android:indeterminateTint="?attr/rmgCyan"/>
+                <Button android:id="@+id/updateCheck" android:layout_width="match_parent"
+                    android:layout_height="54dp" android:layout_marginTop="22dp"
+                    android:background="@drawable/rmg_primary_button"
+                    android:text="CHECK FOR UPDATES" android:textAllCaps="false"
+                    android:textStyle="bold" android:textColor="?attr/rmgBg"/>
+                <Button android:id="@+id/updateDownload" android:layout_width="match_parent"
+                    android:layout_height="54dp" android:layout_marginTop="8dp"
+                    android:background="@drawable/rmg_primary_button"
+                    android:text="DOWNLOAD &amp; INSTALL UPDATE" android:textAllCaps="false"
+                    android:textStyle="bold" android:textColor="?attr/rmgBg"
+                    android:visibility="gone"/>
+            </LinearLayout>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="21dp" android:textSize="12sp"
+                android:textColor="?attr/rmgMuted" android:lineSpacingExtra="4dp"
+                android:text="Updates come from the official RMP GitHub Release. The APK is verified locally and installed only with Android confirmation. A different signing key cannot update an existing install without a one-time migration."/>
+        </LinearLayout>
+    </ScrollView>
+    <include layout="@layout/view_rmp_bottom_nav"/>
+</LinearLayout>

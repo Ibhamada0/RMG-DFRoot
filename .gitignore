@@ -30,3 +30,9 @@ lkm/Module.symvers
 out/
 app/src/main/jni/splicehelper
 app/src/main/jni/ko/*.ko
+
+# Never check in private Android app signing keys
+*.jks
+*.keystore
+*.p12
+*.pfx

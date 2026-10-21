@@ -8,6 +8,11 @@ val signingProps = Properties()
 val signingPropsFile = rootProject.file("signing.properties")
 if (signingPropsFile.exists()) signingProps.load(signingPropsFile.inputStream())
 
+// Stable release signing is injected from encrypted Actions secrets or
+// untracked local signing.properties. The key must never enter Git history.
+fun releaseCredential(property: String, environment: String): String? =
+    signingProps.getProperty(property) ?: System.getenv(environment)
+
 android {
     namespace = "df.root"
     compileSdk = 36
@@ -20,8 +25,8 @@ android {
         applicationId = "df.root"
         minSdk = 32
         targetSdk = 36
-        versionCode = 413
-        versionName = "4.13-rmp"
+        versionCode = 414
+        versionName = "4.14-rmp"
 
         ndk {
             abiFilters += listOf("arm64-v8a")
@@ -30,10 +35,11 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(signingProps.getProperty("KEYSTORE_FILE") ?: "../keystore.jks")
-            storePassword = signingProps.getProperty("KEYSTORE_PASSWORD")
-            keyAlias = signingProps.getProperty("KEY_ALIAS")
-            keyPassword = signingProps.getProperty("KEY_PASSWORD")
+            storeFile = file(releaseCredential("KEYSTORE_FILE", "RMP_KEYSTORE_FILE")
+                ?: "../keystore.jks")
+            storePassword = releaseCredential("KEYSTORE_PASSWORD", "RMP_KEYSTORE_PASSWORD")
+            keyAlias = releaseCredential("KEY_ALIAS", "RMP_KEY_ALIAS")
+            keyPassword = releaseCredential("KEY_PASSWORD", "RMP_KEY_PASSWORD")
         }
     }
 
@@ -44,8 +50,9 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
-            isShrinkResources = true
+            // Do not shrink original DFRoot code during first stable signing migration.
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

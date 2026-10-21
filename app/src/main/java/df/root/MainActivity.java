@@ -124,6 +124,8 @@ public class MainActivity extends Activity implements IReporter {
 
         findViewById(R.id.btnSettings).setOnClickListener(v ->
             startActivity(new Intent(this, SettingsActivity.class)));
+        findViewById(R.id.btnAppUpdate).setOnClickListener(v ->
+            startActivity(new Intent(this, RmpUpdateActivity.class)));
         findViewById(R.id.btnInfo).setOnClickListener(v ->
             startActivity(new Intent(this, AppInformationActivity.class)));
         findViewById(R.id.btnOfflineManager).setOnClickListener(v -> {

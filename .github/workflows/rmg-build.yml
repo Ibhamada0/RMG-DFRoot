@@ -88,7 +88,25 @@ jobs:
           echo "774a5511f7034a4930e881114e202319cbdc34c5aaaa5c7c6b6d2902364e4c58  app/src/main/assets/managers/ksu-next-v3.4.2.apk" | sha256sum -c -
           echo "761dffad54ae080a4977971db7b04e2fc65c2d9b5e2336accca4a85661290a69  app/src/main/assets/managers/ksu-samsung-v2.2.apk" | sha256sum -c -
 
-      - name: Assemble RMP with original root engine
+      - name: Check stable release signing credentials
+        id: signing
+        shell: bash
+        env:
+          RMP_KEYSTORE_BASE64: ${{ secrets.RMP_KEYSTORE_BASE64 }}
+          RMP_KEYSTORE_PASSWORD: ${{ secrets.RMP_KEYSTORE_PASSWORD }}
+          RMP_KEY_ALIAS: ${{ secrets.RMP_KEY_ALIAS }}
+          RMP_KEY_PASSWORD: ${{ secrets.RMP_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$RMP_KEYSTORE_BASE64" && -n "$RMP_KEYSTORE_PASSWORD" && -n "$RMP_KEY_ALIAS" && -n "$RMP_KEY_PASSWORD" ]]; then
+            echo 'enabled=true' >> "$GITHUB_OUTPUT"
+            echo 'Stable release signing secrets detected.'
+          else
+            echo 'enabled=false' >> "$GITHUB_OUTPUT"
+            echo '::warning::Stable signing secrets missing. No public Release will be published. Set four RMP_* secrets and rerun.'
+          fi
+
+      - name: Compile debug test only (not updatable)
         shell: bash
         run: |
           set -euo pipefail
@@ -96,57 +114,88 @@ jobs:
           ./gradlew :app:assembleDebug --stacktrace
           APK="$(find app/build/outputs/apk/debug -name '*.apk' -type f | head -1)"
           test -s "$APK"
+          mkdir -p out-ci
+          cp "$APK" out-ci/RMP-debug-CI-TEST-ONLY.apk
+
+      - name: Upload debug test artifact (never a public Release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: RMP-debug-not-updatable
+          path: out-ci/RMP-debug-CI-TEST-ONLY.apk
+          if-no-files-found: error
+
+      - name: Decode private release signing keystore
+        if: steps.signing.outputs.enabled == 'true'
+        shell: bash
+        env:
+          RMP_KEYSTORE_BASE64: ${{ secrets.RMP_KEYSTORE_BASE64 }}
+          RMP_KEYSTORE_PASSWORD: ${{ secrets.RMP_KEYSTORE_PASSWORD }}
+          RMP_KEY_ALIAS: ${{ secrets.RMP_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          KEYSTORE="$RUNNER_TEMP/rmp-release.jks"
+          printf '%s' "$RMP_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          test -s "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" \
+            -storepass "$RMP_KEYSTORE_PASSWORD" -alias "$RMP_KEY_ALIAS" > /dev/null
+          echo "RMP_KEYSTORE_FILE=$KEYSTORE" >> "$GITHUB_ENV"
+
+      - name: Assemble and verify stable signed release APK
+        if: steps.signing.outputs.enabled == 'true'
+        shell: bash
+        env:
+          RMP_KEYSTORE_PASSWORD: ${{ secrets.RMP_KEYSTORE_PASSWORD }}
+          RMP_KEY_ALIAS: ${{ secrets.RMP_KEY_ALIAS }}
+          RMP_KEY_PASSWORD: ${{ secrets.RMP_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          ./gradlew :app:assembleRelease --stacktrace
+          APK="$(find app/build/outputs/apk/release -name '*.apk' -type f | head -1)"
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
           cp "$APK" RMP-Original-DFRoot.apk
           unzip -t RMP-Original-DFRoot.apk | tail -1
           sha256sum RMP-Original-DFRoot.apk > RMP-Original-DFRoot.apk.sha256
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload stable signed APK
+        if: steps.signing.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
         with:
-          name: RMP-original-APK
+          name: RMP-signed-updatable-APK
           path: |
             RMP-Original-DFRoot.apk
             RMP-Original-DFRoot.apk.sha256
           if-no-files-found: error
 
-      - name: Publish visible GitHub Release
-        if: github.ref == 'refs/heads/main'
+      - name: Publish stable-signed GitHub Release
+        if: github.ref == 'refs/heads/main' && steps.signing.outputs.enabled == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: rmp-build-${{ github.run_number }}
           target_commitish: ${{ github.sha }}
-          name: RMP v4.13 | Built-in SU Manager Picker | Build ${{ github.run_number }}
+          name: RMP v4.14 | Signed Releases + In-App Updates | Build ${{ github.run_number }}
           prerelease: false
           make_latest: true
           draft: false
           body: |
-            Original diabl0w/DFRoot root engine at pinned upstream SHA
-            c274137e8c02b4f94f64d1b132d991b80c747340.
-            Native exploit, kernel module and manager selection logic not modified.
+            RMP_VERSION_CODE=414
 
-            ## RMP / Premium Control Center
+            **Stable release-key signed APK.** Future updates retain application
+            ID df.root and MUST use this SAME private signing key.
+            Open Settings > Check for updates (or Check RMP App Updates on Home)
+            to check GitHub Releases, download, verify SHA-256/cert and ask
+            Android to install the APK over the current app.
 
-            The SU Manager dropdown always lists the built-in Classic and Next
-            offline installers even on a clean device. The main install control
-            and Settings option offer the same APKs. Manual installation never
-            auto-launches root; Start continues only following verified install.
+            IMPORTANT: Earlier debug-signed Builds 1–13 do NOT share this
+            stable signing identity. Unless their original private debug key
+            is available, upgrading from them requires a one-time uninstall
+            and reinstall. Export local data/logs before uninstalling.
 
-            Smart Start: when no SU Manager is selected (even if another manager
-            is detected), the Start button always opens an explicit Classic /
-            Next offline installer chooser, or lets the user select an installed
-            Manager. The chooser remains reachable with a stale session marker. Once Android confirms installation,
-            RMP checks the installed package and ksud library before continuing the
-            user's original Start request. Canceled/incompatible installs never trigger root.
-
-            Four-tab bottom navigation, private session log history with Copy/Delete/Clear All,
-            six coordinated premium themes, App Information center with 8 documented
-            kernel module build targets, How to Use and expandable FAQ, redesigned dashboard,
-            real-time device/SELinux information, native manager selection,
-            copyable logs and two SHA-256-verified offline SU Manager APKs.
-
-            **Experimental software:** not tested on SM-S918N physical hardware.
-            Successful APK compilation does not guarantee root compatibility.
-            APK is signed with the default Android debug key, not release signing.
-            Back up your data before installing or attempting root.
+            Original diabl0w/DFRoot root engine pinned upstream
+            c274137e8c02b4f94f64d1b132d991b80c747340 is unchanged.
+            Built-in SU Manager installers, session History, six themes, FAQ.
+            Experimental software; actual root success not guaranteed.
           files: |
             RMP-Original-DFRoot.apk
             RMP-Original-DFRoot.apk.sha256

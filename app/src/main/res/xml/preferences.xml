@@ -20,6 +20,10 @@
 
     <Preference android:key="rmg_appearance" android:title="RMP Appearance" android:summary="Choose six RMP themes"/>
     <Preference android:key="rmg_install" android:title="Install built-in SU Manager" android:summary="Choose bundled Classic or Next for offline installation"/>
+    <PreferenceCategory android:title="UPDATES">
+        <Preference android:key="rmp_updates" android:title="Check for updates"
+            android:summary="Signed APK updates from RMP GitHub Releases" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="INFORMATION &amp; SUPPORT">
         <Preference android:key="rmp_information"
             android:title="App Information"

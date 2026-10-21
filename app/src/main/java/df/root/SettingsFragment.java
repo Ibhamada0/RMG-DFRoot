@@ -23,6 +23,10 @@ public class SettingsFragment extends PreferenceFragment {
             startActivity(new Intent(getActivity(),RmgAppearanceActivity.class));return true;});
         findPreference("rmg_install").setOnPreferenceClickListener(p -> {
             RmgOfflineManagerInstaller.choose(getActivity());return true;});
+        findPreference("rmp_updates").setOnPreferenceClickListener(p -> {
+            startActivity(new Intent(getActivity(), RmpUpdateActivity.class));
+            return true;
+        });
 
         Context ctx = getActivity();
         SharedPreferences dePrefs = ctx.createDeviceProtectedStorageContext()

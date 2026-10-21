@@ -9,7 +9,26 @@
 
 Open the latest release above and download `RMP-Original-DFRoot.apk` under **Assets**. This is a GitHub Release on the repository home page, **not** a temporary Actions artifact or signing-key file. SHA-256 is included alongside the APK.
 
-> **Experimental and debug-signed.** Successful compilation is not proof of root support on your firmware. An APK signed with the default debug key cannot necessarily update a differently signed install. Back up your device.
+> **Signing transition:** Builds 1–13 were signed with CI debug keys and do **not** necessarily install over one another. Stable signed Releases and in-app updates become available only after you configure the private GitHub Actions signing secrets. An existing debug-signed install may require a **one-time uninstall/reinstall** to migrate to the new key. Back up any important app data and logs first. Root remains experimental.
+
+## Signed release and in-app APK updates
+
+RMP now includes an **App Updates** screen (Home → Check RMP App Updates or
+Settings → Check for updates). For new consistently signed GitHub releases it
+checks the release's SHA-256, signing certificate, package identity and
+versionCode before sending the APK to the Android system installer. Android
+still requires your installation confirmation.
+
+The GitHub workflow **publishes release APKs only when all 4 stable signing
+secrets have been configured**. If not configured, CI builds an explicitly
+non-upgradable debug test artifact but no new public Release.
+
+**The first switch from a prior debug-signed APK to the stable signing key
+cannot be seamless if the certificates differ**. Plan a one-time migration
+and back up local data/logs. All subsequent APKs signed with that same
+stable release key can update in place without uninstalling.
+
+See [Stable APK signing and updater setup](docs/RELEASE_SIGNING_AND_UPDATES.md).
 
 ## About RMP / original DFRoot engine
 
