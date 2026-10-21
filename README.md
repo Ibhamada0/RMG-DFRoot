@@ -45,7 +45,6 @@ No network access is needed for installing a bundled manager **from a built APK*
 ### Build setup
 The bootstrap workflow clones the pinned upstream code and adds the UI overlay, committing the result to `main`. The build workflow compiles the original KMI kernel modules first and then the Android debug APK. Successful builds are published as visible **GitHub Releases**, with the most recent build marked as **Latest**. Releases remain experimental even though the GitHub prerelease flag is disabled so the build appears in the repository's Releases section. Debug-signed APKs are **not production-signed** and may not update apps with a different signature.
 
-**Warning:** Android kernel exploit/root compatibility with Galaxy S23 Ultra SM-S918N and any specific firmware has **not been tested or verified**. Rooting may affect SELinux, security, device stability and data. Do not try without a backup and a recovery plan.
 
 Code credits: [diabl0w](https://github.com/diabl0w/DFRoot),
 [soumarcelino](https://github.com/soumarcelino/DFRoot), and original exploit contributors.
