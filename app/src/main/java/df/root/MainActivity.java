@@ -142,6 +142,13 @@ public class MainActivity extends Activity implements IReporter {
                 updateRunButton();
                 return;
             }
+            if (mPendingPermissionIndex >= 0 || mPendingManagerPackage != null) {
+                // A canceled or stalled external installer must not leave Start
+                // permanently disabled. A new tap expressly replaces that flow.
+                mPendingPermissionIndex = -1;
+                mPendingManagerPackage = null;
+                mInstallRequestedAt = 0L;
+            }
             if (mValidSuManagerPos < 1) {
                 if (mManagerCount == 0) {
                     // Start is actionable even with no Manager. The system installer
@@ -191,27 +198,14 @@ public class MainActivity extends Activity implements IReporter {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RmgOfflineManagerInstaller.REQUEST_INSTALL) {
-            // Installer resultCode is not always reliable. Verify the actual installed
-            // application and its libksud.so instead of trusting RESULT_OK.
-            mMain.postDelayed(() -> {
-                checkPendingManagerInstallation();
-                // ACTION_VIEW can return RESULT_CANCELED even when the user
-                // installs successfully. Re-check Android's PackageManager.
-                // If it is still absent after a grace period, reset the flow.
-                if (mPendingManagerPackage != null) {
-                    mMain.postDelayed(() -> {
-                        checkPendingManagerInstallation();
-                        if (mPendingManagerPackage != null) {
-                            mPendingManagerPackage = null;
-                            Toast.makeText(this,
-                                "Installation was canceled or did not finish. Tap Start to try again.",
-                                Toast.LENGTH_LONG).show();
-                            updateRunButton();
-                        }
-                    }, 1200);
-                }
-            }, 950);
+        if (requestCode != RmgOfflineManagerInstaller.REQUEST_INSTALL) return;
+
+        // ACTION_VIEW installation activities may return RESULT_CANCELED even
+        // when the package install is in progress or subsequently succeeds.
+        // Never clear the pending Start request based solely on resultCode.
+        // Confirm presence of the chosen package and its ksud library instead.
+        for (long delay : new long[]{450L, 1300L, 3200L, 6800L}) {
+            mMain.postDelayed(this::checkPendingManagerInstallation, delay);
         }
     }
 
@@ -364,14 +358,14 @@ public class MainActivity extends Activity implements IReporter {
         boolean active = new File("/dev/df").exists();
         boolean selected = mValidSuManagerPos >= 1;
         boolean waiting = mPendingPermissionIndex >= 0 || mPendingManagerPackage != null;
-        btnRun.setEnabled(!active && !waiting);
+        btnRun.setEnabled(!active);
         btnRun.setText(active ? "ROOT SESSION ACTIVE" :
-            waiting ? "FINISH MANAGER INSTALLATION" :
+            waiting ? "RETRY MANAGER INSTALL / START" :
             selected ? "LAUNCH ROOT SESSION" :
             mManagerCount == 0 ? "START / INSTALL SU MANAGER" :
             "SELECT A MANAGER TO START");
         tvManagerHint.setText(waiting
-            ? "Finish Android installation first. Only a verified compatible Manager will continue."
+            ? "Waiting for Android installation. If you canceled it, tap Start to retry. RMP runs only after verifying the chosen Manager."
             : mManagerCount == 0
                 ? "No compatible Manager detected. Tap Start to choose and install one offline."
                 : mManagerCount + " compatible manager(s) detected. Select the one to use.");
