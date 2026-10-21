@@ -88,7 +88,7 @@
            android:paddingEnd="8dp" android:spinnerMode="dropdown"/>
         <TextView android:id="@+id/tvManagerHint" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="12dp"
-            android:text="Only installed managers with a compatible ksud are shown."
+            android:text="Built-in Classic and Next are always available. Tap one to install with Android."
             android:textSize="12sp" android:lineSpacingExtra="3dp" android:textColor="?attr/rmgSecondary"/>
         <Button android:id="@+id/btnRun" android:layout_width="match_parent"
             android:layout_height="58dp" android:layout_marginTop="20dp"
@@ -102,7 +102,7 @@
             android:visibility="gone"/>
         <TextView android:id="@+id/btnOfflineManager" android:layout_width="match_parent"
             android:layout_height="48dp" android:layout_marginTop="8dp" android:gravity="center"
-            android:text="INSTALL MANAGER OFFLINE  →" android:textColor="?attr/rmgIce"
+            android:text="INSTALL BUILT-IN MANAGER  →" android:textColor="?attr/rmgIce"
             android:textSize="12sp" android:textStyle="bold" android:clickable="true"
             android:focusable="true" android:contentDescription="Open offline SU Manager installer"/>
         </LinearLayout>

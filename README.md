@@ -60,6 +60,20 @@ copy the text, or delete it. The **Clear All** action asks for confirmation.
 - Logs from before this update are **not recoverable**. Removing the app or clearing
   app data erases these local records. Boot-initiated sessions are not captured.
 
+### Built-in SU Manager dropdown and installer buttons
+
+**Select SU Manager** now always includes two bundled installer entries:
+**KernelSU Classic (Samsung)** and **KernelSU Next v3.4.2**.
+Selecting one opens Android's official APK installer with the copy already
+embedded in the RMP APK. The existing compatible Manager entries remain
+separately selectable below the built-in installer entries.
+
+The home screen's **Install Built-in Manager** button and Settings
+**Install built-in SU Manager** option use the same two-APK chooser.
+Manual installation never runs root automatically; it selects the verified
+installed Manager and lets you press Start. Only a prior explicit Start
+request may continue automatically after verification.
+
 ### Smart Start / Manager selection
 
 When **Start** is tapped without a selected SU Manager, a setup dialog

@@ -35,13 +35,13 @@ public final class RmgOfflineManagerInstaller {
     public static void choose(Activity activity) { choose(activity, null); }
 
     public static void choose(Activity activity, InstallListener listener) {
-        new AlertDialog.Builder(activity).setTitle("Install official Manager (offline)")
-            .setMessage(listener == null
-                ? "Select the Manager to install. Android will ask for confirmation."
-                : "Choose a Manager. Once Android confirms a compatible installation, "
-                    + "RMP will automatically continue the Start request you just made.")
-            .setItems(new String[]{"KernelSU Next v3.4.2","KernelSU Samsung v2.2"},
-                (dialog,index)->install(activity,index,listener))
+        new AlertDialog.Builder(activity).setTitle("RMP / Built-in Managers")
+            .setMessage("Choose one of the two verified Manager APKs bundled "
+                + "inside RMP. Android will request your permission to install.")
+            .setItems(new String[]{
+                "KernelSU Classic (Samsung) - BUILT-IN",
+                "KernelSU Next v3.4.2 - BUILT-IN"},
+                (dialog,index)->install(activity,index == 0 ? 1 : 0,listener))
             .setNegativeButton("Cancel",null).show();
     }
 

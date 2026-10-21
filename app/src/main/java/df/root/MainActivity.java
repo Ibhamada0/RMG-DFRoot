@@ -62,6 +62,7 @@ public class MainActivity extends Activity implements IReporter {
     private String mPendingManagerPackage;
     private int mPendingPermissionIndex = -1;
     private long mInstallRequestedAt;
+    private boolean mContinueStartAfterInstall;
     private static final long INSTALL_FLOW_TIMEOUT_MS = 10 * 60 * 1000L;
     private final RmgOfflineManagerInstaller.InstallListener mStartInstallListener =
         new RmgOfflineManagerInstaller.InstallListener() {
@@ -125,8 +126,10 @@ public class MainActivity extends Activity implements IReporter {
             startActivity(new Intent(this, SettingsActivity.class)));
         findViewById(R.id.btnInfo).setOnClickListener(v ->
             startActivity(new Intent(this, AppInformationActivity.class)));
-        findViewById(R.id.btnOfflineManager).setOnClickListener(v ->
-            RmgOfflineManagerInstaller.choose(this));
+        findViewById(R.id.btnOfflineManager).setOnClickListener(v -> {
+            mContinueStartAfterInstall = false;
+            RmgOfflineManagerInstaller.choose(this, mStartInstallListener);
+        });
         findViewById(R.id.btnCopyLogs).setOnClickListener(v -> {
             ClipboardManager manager =
                 (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -142,6 +145,7 @@ public class MainActivity extends Activity implements IReporter {
             // Do not rely exclusively on manager count. An installed but
             // unselected Manager previously skipped the offline install chooser.
             if (mValidSuManagerPos < 1 || mManagerCount == 0) {
+                mContinueStartAfterInstall = true;
                 // An explicit new Start tap replaces an abandoned install flow.
                 mPendingPermissionIndex = -1;
                 mPendingManagerPackage = null;
@@ -235,6 +239,8 @@ public class MainActivity extends Activity implements IReporter {
         // The exact APK chosen by the user has been installed and passed the
         // same eligibility check as original DFRoot's Manager selector.
         mPendingManagerPackage = null;
+        boolean continueStart = mContinueStartAfterInstall;
+        mContinueStartAfterInstall = false;
         mDeCtx.getSharedPreferences(ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE)
             .edit().putString(ExploitRunner.PREF_SU_MANAGER, requested).apply();
         loadManagers();
@@ -242,9 +248,15 @@ public class MainActivity extends Activity implements IReporter {
             updateRunButton();
             return;
         }
-        Toast.makeText(this, "Manager verified. Continuing your Start request.",
-            Toast.LENGTH_LONG).show();
-        startRootSession();
+        if (continueStart) {
+            Toast.makeText(this, "Manager verified. Continuing your Start request.",
+                Toast.LENGTH_LONG).show();
+            startRootSession();
+        } else {
+            updateRunButton();
+            Toast.makeText(this, "Built-in Manager verified and selected.",
+                Toast.LENGTH_LONG).show();
+        }
     }
 
     private void startRootSession() {
@@ -286,44 +298,67 @@ public class MainActivity extends Activity implements IReporter {
 
     private void loadManagers() {
         PackageManager pm = getPackageManager();
-        List<SuManagerEntry> entries = new ArrayList<>();
+        List<SuManagerEntry> installed = new ArrayList<>();
         for (ApplicationInfo ai : pm.getInstalledApplications(0)) {
             if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) continue;
             if (!ExploitRunner.hasKsud(ai)) continue;
-            entries.add(new SuManagerEntry(ai.packageName,
+            installed.add(new SuManagerEntry(ai.packageName,
                 pm.getApplicationLabel(ai), pm.getApplicationIcon(ai)));
         }
-        entries.sort((a, b) -> a.label.toString().compareToIgnoreCase(b.label.toString()));
-        mManagerCount = entries.size();
-        entries.add(0, new SuManagerEntry(null, "Select a compatible SU Manager", null));
-
-        SharedPreferences prefs = mDeCtx.getSharedPreferences(
-            ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE);
-        String saved = prefs.getString(ExploitRunner.PREF_SU_MANAGER, null);
-        int selected = 0;
-        for (int i = 1; i < entries.size(); i++) {
-            if (entries.get(i).packageName.equals(saved)) {
-                selected = i;
-                break;
-            }
-        }
-        if (selected == 0 && saved != null)
+        installed.sort((a,b)->a.label.toString().compareToIgnoreCase(b.label.toString()));
+        mManagerCount = installed.size();
+        List<SuManagerEntry> entries = new ArrayList<>();
+        entries.add(new SuManagerEntry(null,"Select SU Manager / Built-in",null));
+        // Always available from the bundled APK assets, even on a fresh device.
+        entries.add(new SuManagerEntry(1,"KernelSU Classic (Samsung) - BUILT-IN / INSTALL"));
+        entries.add(new SuManagerEntry(0,"KernelSU Next v3.4.2 - BUILT-IN / INSTALL"));
+        entries.addAll(installed);
+        SharedPreferences prefs=mDeCtx.getSharedPreferences(
+            ExploitRunner.PREFS_NAME,Context.MODE_PRIVATE);
+        String saved=prefs.getString(ExploitRunner.PREF_SU_MANAGER,null);
+        int selected=0;
+        for(int i=3;i<entries.size();i++)
+            if(entries.get(i).packageName.equals(saved)){selected=i;break;}
+        if(selected==0 && saved!=null)
             prefs.edit().remove(ExploitRunner.PREF_SU_MANAGER).apply();
-
-        mValidSuManagerPos = selected;
-        spinnerSuManager.setAdapter(new SuManagerAdapter(this, entries));
-        spinnerSuManager.setSelection(selected);
-        spinnerSuManager.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                SuManagerEntry e = entries.get(pos);
-                mValidSuManagerPos = e.packageName == null ? 0 : pos;
-                if (e.packageName != null)
-                    prefs.edit().putString(ExploitRunner.PREF_SU_MANAGER, e.packageName).apply();
+        mValidSuManagerPos=selected;
+        spinnerSuManager.setOnItemSelectedListener(null);
+        spinnerSuManager.setAdapter(new SuManagerAdapter(this,entries));
+        spinnerSuManager.setSelection(selected,false);
+        spinnerSuManager.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override public void onItemSelected(AdapterView<?> parent,View view,int pos,long id){
+                if(pos<0||pos>=entries.size())return;
+                SuManagerEntry e=entries.get(pos);
+                if(e.builtInIndex>=0){
+                    // Choosing a bundled APK installs it; it is NOT yet a ready Manager.
+                    spinnerSuManager.setSelection(findSelectedManager(entries),false);
+                    mContinueStartAfterInstall=false;
+                    mPendingPermissionIndex=-1;
+                    mPendingManagerPackage=null;
+                    RmgOfflineManagerInstaller.install(MainActivity.this,
+                        e.builtInIndex,mStartInstallListener);
+                    updateRunButton();
+                    return;
+                }
+                mValidSuManagerPos=e.packageName==null?0:pos;
+                if(e.packageName!=null)
+                    prefs.edit().putString(ExploitRunner.PREF_SU_MANAGER,e.packageName).apply();
+                else prefs.edit().remove(ExploitRunner.PREF_SU_MANAGER).apply();
                 updateRunButton();
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            @Override public void onNothingSelected(AdapterView<?> parent){}
         });
+        updateRunButton();
+    }
+
+    private int findSelectedManager(List<SuManagerEntry> entries){
+        String saved=mDeCtx.getSharedPreferences(
+            ExploitRunner.PREFS_NAME,Context.MODE_PRIVATE)
+            .getString(ExploitRunner.PREF_SU_MANAGER,null);
+        if(saved==null)return 0;
+        for(int i=3;i<entries.size();i++)
+            if(saved.equals(entries.get(i).packageName))return i;
+        return 0;
     }
 
     private void refreshSelinux() {
@@ -360,12 +395,10 @@ public class MainActivity extends Activity implements IReporter {
             ? waiting ? "RETRY MANAGER SETUP" : "START / CHOOSE SU MANAGER"
             : active ? "ROOT SESSION ACTIVE" : "LAUNCH ROOT SESSION");
         tvManagerHint.setText(waiting
-            ? "Waiting for Android installation. If you canceled it, tap Start to retry. RMP runs only after verifying the chosen Manager."
-            : mManagerCount == 0
-                ? "No compatible Manager detected. Tap Start to install one offline."
-                : selected
-                    ? mManagerCount + " compatible manager(s) detected."
-                    : "No Manager selected. Tap Start to choose an installed Manager or install Classic / Next.");
+            ? "Confirm the bundled Manager installation in Android, then return."
+            : selected
+                ? mManagerCount + " compatible Manager(s). Built-in installers available above."
+                : "Choose a built-in Classic / Next Manager above to install it, or tap Start.");
         if (active) {
             showStatus("Root session found", "ACTIVE",
                 "DFRoot's /dev/df session marker is present. This does not independently verify SU permissions.",
@@ -427,11 +460,19 @@ public class MainActivity extends Activity implements IReporter {
         final String packageName;
         final CharSequence label;
         final Drawable icon;
+        final int builtInIndex;
 
         SuManagerEntry(String pkg, CharSequence label, Drawable icon) {
             this.packageName = pkg;
             this.label = label;
             this.icon = icon;
+            this.builtInIndex = -1;
+        }
+        SuManagerEntry(int builtInIndex, String label) {
+            this.packageName = null;
+            this.label = label;
+            this.icon = null;
+            this.builtInIndex = builtInIndex;
         }
     }
 
@@ -460,7 +501,7 @@ public class MainActivity extends Activity implements IReporter {
 
         @Override
         public boolean isEnabled(int pos) {
-            return getItem(pos).packageName != null;
+            return getItem(pos).packageName != null || getItem(pos).builtInIndex >= 0;
         }
 
         private View bindItem(int pos, View v) {

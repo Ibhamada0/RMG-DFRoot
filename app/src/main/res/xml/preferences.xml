@@ -19,7 +19,7 @@
         android:defaultValue="false" />
 
     <Preference android:key="rmg_appearance" android:title="RMP Appearance" android:summary="Choose six RMP themes"/>
-    <Preference android:key="rmg_install" android:title="Install SU Manager offline" android:summary="Install official verified Manager APK, Android approval required"/>
+    <Preference android:key="rmg_install" android:title="Install built-in SU Manager" android:summary="Choose bundled Classic or Next for offline installation"/>
     <PreferenceCategory android:title="INFORMATION &amp; SUPPORT">
         <Preference android:key="rmp_information"
             android:title="App Information"
