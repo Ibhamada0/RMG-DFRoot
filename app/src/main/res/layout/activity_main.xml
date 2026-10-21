@@ -172,4 +172,5 @@
             android:letterSpacing="0.05"/>
       </LinearLayout>
     </ScrollView>
+    <include layout="@layout/view_rmp_bottom_nav"/>
 </LinearLayout>

@@ -34,6 +34,19 @@ Open the **information icon** in the home screen header, or go to
 - **FAQ:** expandable answers about KernelSU variants, root session markers,
   signing, updates, permissions and boot settings.
 
+### Bottom navigation and session log history
+
+The fixed bottom bar provides four destinations: **Home, Info, History, Settings**.
+On the **History** page, tap any root session to review its captured console messages,
+copy the text, or delete it. The **Clear All** action asks for confirmation.
+
+- Manual root-session logs are stored privately on-device in the app's own files directory.
+- Only the latest **20 sessions** are retained; each is capped at **256 KiB**.
+- No history is uploaded. Logs may include firmware identifiers and other output
+  printed by DFRoot. Share copied logs only when you trust the recipient.
+- Logs from before this update are **not recoverable**. Removing the app or clearing
+  app data erases these local records. Boot-initiated sessions are not captured.
+
 ### RMP customizations
 
 The main screen is a fully redesigned **Premium Control Center** with a

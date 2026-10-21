@@ -13,7 +13,8 @@ public class SettingsActivity extends Activity {
         setTheme(RmgAppearance.theme(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getActionBar() != null) getActionBar().hide();
+        RmpBottomNavigation.attach(this, RmpBottomNavigation.SETTINGS);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.settingsContainer, new SettingsFragment())

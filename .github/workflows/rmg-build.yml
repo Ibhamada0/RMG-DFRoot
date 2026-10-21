@@ -114,7 +114,7 @@ jobs:
         with:
           tag_name: rmp-build-${{ github.run_number }}
           target_commitish: ${{ github.sha }}
-          name: RMP v4.9 | App Information + FAQ | Build ${{ github.run_number }}
+          name: RMP v4.10 | Bottom Navigation + Log History | Build ${{ github.run_number }}
           prerelease: false
           make_latest: true
           draft: false
@@ -125,7 +125,8 @@ jobs:
 
             ## RMP / Premium Control Center
 
-            Six coordinated premium themes, a new App Information center with 8 documented
+            Four-tab bottom navigation, private session log history with Copy/Delete/Clear All,
+            six coordinated premium themes, App Information center with 8 documented
             kernel module build targets, How to Use and expandable FAQ, redesigned dashboard,
             real-time device/SELinux information, native manager selection,
             copyable logs and two SHA-256-verified offline SU Manager APKs.

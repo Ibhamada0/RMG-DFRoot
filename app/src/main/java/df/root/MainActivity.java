@@ -56,10 +56,13 @@ public class MainActivity extends Activity implements IReporter {
     private int mValidSuManagerPos = 0;
     private int mManagerCount = 0;
     private boolean mRunning = false;
+    private volatile String mLogSessionId;
 
     @Override
     public void report(String msg) {
         Log.i(TAG, msg.trim());
+        String session = mLogSessionId;
+        if (session != null) RmpSessionHistory.append(this, session, msg);
         mMain.post(() -> {
             if (isFinishing() || isDestroyed() || outputView == null) return;
             outputView.append(msg);
@@ -75,6 +78,7 @@ public class MainActivity extends Activity implements IReporter {
         mDeCtx = createDeviceProtectedStorageContext();
         setContentView(R.layout.activity_main);
         if (getActionBar() != null) getActionBar().hide();
+        RmpBottomNavigation.attach(this, RmpBottomNavigation.HOME);
 
         btnRun = findViewById(R.id.btnRun);
         outputScroll = findViewById(R.id.outputScroll);
@@ -116,6 +120,12 @@ public class MainActivity extends Activity implements IReporter {
                 updateRunButton();
                 return;
             }
+            String selectedManager = mDeCtx.getSharedPreferences(
+                ExploitRunner.PREFS_NAME, Context.MODE_PRIVATE).getString(
+                    ExploitRunner.PREF_SU_MANAGER, "Unknown");
+            mLogSessionId = RmpSessionHistory.begin(this, selectedManager);
+            RmpSessionHistory.append(this, mLogSessionId,
+                "> Starting original DFRoot engine...\n");
             mRunning = true;
             btnRun.setEnabled(false);
             btnRun.setText("RUNNING ORIGINAL DFROOT...");
@@ -258,6 +268,11 @@ public class MainActivity extends Activity implements IReporter {
         }
         final int rc = result;
         final String detail = error;
+        String session = mLogSessionId;
+        RmpSessionHistory.finish(this, session,
+            (new File("/dev/df").exists() ? "Session marker detected" : "Session not confirmed")
+                + " / code " + rc + (detail == null ? "" : " / " + detail));
+        mLogSessionId = null;
         mMain.post(() -> {
             if (isFinishing() || isDestroyed()) return;
             mRunning = false;

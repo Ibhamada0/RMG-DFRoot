@@ -34,21 +34,30 @@ public final class AppInformationActivity extends Activity {
     private static final String[] TAB_NAMES = {"KERNEL TARGETS", "HOW TO USE", "FAQ"};
 
     private int selected = 0;
+    private int shownTheme;
     private LinearLayout content;
     private LinearLayout tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        shownTheme = RmgAppearance.index(this);
         setTheme(RmgAppearance.theme(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_information);
         if (getActionBar() != null) getActionBar().hide();
+        RmpBottomNavigation.attach(this, RmpBottomNavigation.INFO);
         content = findViewById(R.id.infoContent);
         tabs = findViewById(R.id.infoTabs);
         findViewById(R.id.infoBack).setOnClickListener(v -> finish());
 
         selected = Math.max(0, Math.min(2, getIntent().getIntExtra(EXTRA_TAB, KERNELS)));
         switchTo(selected);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (RmgAppearance.index(this) != shownTheme) recreate();
     }
 
     private int color(int attr) {
@@ -235,6 +244,8 @@ public final class AppInformationActivity extends Activity {
             "APK upgrades require matching application ID and signing certificate. RMP builds are signed using the GitHub runner's default debug key, so a previous differently signed install can block the update.");
         faq("Does changing themes affect the root engine?",
             "No. The six themes affect appearance only; the original DFRoot native engine is unchanged.");
+        faq("Where can I find previous session logs?",
+            "Open History using the bottom bar. RMP stores only manual sessions started since this update, privately on your device. Copy or delete individual logs, or clear all saved sessions.");
     }
 
     private void faq(String question, String answer) {

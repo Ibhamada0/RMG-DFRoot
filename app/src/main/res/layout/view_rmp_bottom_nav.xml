@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rmpBottomBar"
+    android:layout_width="match_parent"
+    android:layout_height="73dp"
+    android:orientation="vertical"
+    android:background="?attr/rmgPanel">
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:background="?attr/rmgBorder"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:paddingStart="12dp" android:paddingEnd="12dp"
+        android:paddingTop="7dp" android:paddingBottom="7dp" android:orientation="horizontal">
+
+        <LinearLayout android:id="@+id/navHome" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center"
+            android:clickable="true" android:focusable="true" android:contentDescription="Home">
+            <ImageView android:id="@+id/navIconHome" android:layout_width="24dp"
+                android:layout_height="24dp" android:src="@drawable/ic_rmp_nav_home"
+                android:contentDescription="@null"/>
+            <TextView android:id="@+id/navLabelHome" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginTop="4dp"
+                android:text="Home" android:textSize="11sp" android:fontFamily="sans-serif-medium"
+                android:textColor="?attr/rmgMuted"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navInfo" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center"
+            android:clickable="true" android:focusable="true" android:contentDescription="App information">
+            <ImageView android:id="@+id/navIconInfo" android:layout_width="24dp"
+                android:layout_height="24dp" android:src="@drawable/ic_rmp_nav_info"
+                android:contentDescription="@null"/>
+            <TextView android:id="@+id/navLabelInfo" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginTop="4dp"
+                android:text="Info" android:textSize="11sp" android:fontFamily="sans-serif-medium"
+                android:textColor="?attr/rmgMuted"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navHistory" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center"
+            android:clickable="true" android:focusable="true" android:contentDescription="Session log history">
+            <ImageView android:id="@+id/navIconHistory" android:layout_width="24dp"
+                android:layout_height="24dp" android:src="@drawable/ic_rmp_nav_history"
+                android:contentDescription="@null"/>
+            <TextView android:id="@+id/navLabelHistory" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginTop="4dp"
+                android:text="History" android:textSize="11sp" android:fontFamily="sans-serif-medium"
+                android:textColor="?attr/rmgMuted"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/navSettings" android:layout_width="0dp"
+            android:layout_weight="1" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center"
+            android:clickable="true" android:focusable="true" android:contentDescription="Settings">
+            <ImageView android:id="@+id/navIconSettings" android:layout_width="24dp"
+                android:layout_height="24dp" android:src="@drawable/ic_rmp_nav_settings"
+                android:contentDescription="@null"/>
+            <TextView android:id="@+id/navLabelSettings" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_marginTop="4dp"
+                android:text="Settings" android:textSize="11sp" android:fontFamily="sans-serif-medium"
+                android:textColor="?attr/rmgMuted"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
