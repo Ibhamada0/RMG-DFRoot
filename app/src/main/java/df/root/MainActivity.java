@@ -138,27 +138,21 @@ public class MainActivity extends Activity implements IReporter {
         });
 
         btnRun.setOnClickListener(v -> {
-            if (mRunning || new File("/dev/df").exists()) {
-                updateRunButton();
-                return;
-            }
-            if (mPendingPermissionIndex >= 0 || mPendingManagerPackage != null) {
-                // A canceled or stalled external installer must not leave Start
-                // permanently disabled. A new tap expressly replaces that flow.
+            if (mRunning) return;
+            // Do not rely exclusively on manager count. An installed but
+            // unselected Manager previously skipped the offline install chooser.
+            if (mValidSuManagerPos < 1 || mManagerCount == 0) {
+                // An explicit new Start tap replaces an abandoned install flow.
                 mPendingPermissionIndex = -1;
                 mPendingManagerPackage = null;
                 mInstallRequestedAt = 0L;
+                RmgOfflineManagerInstaller.chooseForStart(
+                    this, mStartInstallListener, mManagerCount > 0,
+                    () -> spinnerSuManager.performClick());
+                return;
             }
-            if (mValidSuManagerPos < 1) {
-                if (mManagerCount == 0) {
-                    // Start is actionable even with no Manager. The system installer
-                    // still requires explicit Android approval.
-                    RmgOfflineManagerInstaller.choose(this, mStartInstallListener);
-                } else {
-                    Toast.makeText(this, "Select an installed SU Manager first.",
-                        Toast.LENGTH_LONG).show();
-                    spinnerSuManager.performClick();
-                }
+            if (new File("/dev/df").exists()) {
+                updateRunButton();
                 return;
             }
             startRootSession();
@@ -358,17 +352,20 @@ public class MainActivity extends Activity implements IReporter {
         boolean active = new File("/dev/df").exists();
         boolean selected = mValidSuManagerPos >= 1;
         boolean waiting = mPendingPermissionIndex >= 0 || mPendingManagerPackage != null;
-        btnRun.setEnabled(!active);
-        btnRun.setText(active ? "ROOT SESSION ACTIVE" :
-            waiting ? "RETRY MANAGER INSTALL / START" :
-            selected ? "LAUNCH ROOT SESSION" :
-            mManagerCount == 0 ? "START / INSTALL SU MANAGER" :
-            "SELECT A MANAGER TO START");
+        boolean needsSetup = !selected || mManagerCount == 0;
+        // Even if a stale /dev/df marker exists, users must be able to open
+        // the Manager setup chooser. Do not run an exploit in that case.
+        btnRun.setEnabled(!active || needsSetup);
+        btnRun.setText(needsSetup
+            ? waiting ? "RETRY MANAGER SETUP" : "START / CHOOSE SU MANAGER"
+            : active ? "ROOT SESSION ACTIVE" : "LAUNCH ROOT SESSION");
         tvManagerHint.setText(waiting
             ? "Waiting for Android installation. If you canceled it, tap Start to retry. RMP runs only after verifying the chosen Manager."
             : mManagerCount == 0
-                ? "No compatible Manager detected. Tap Start to choose and install one offline."
-                : mManagerCount + " compatible manager(s) detected. Select the one to use.");
+                ? "No compatible Manager detected. Tap Start to install one offline."
+                : selected
+                    ? mManagerCount + " compatible manager(s) detected."
+                    : "No Manager selected. Tap Start to choose an installed Manager or install Classic / Next.");
         if (active) {
             showStatus("Root session found", "ACTIVE",
                 "DFRoot's /dev/df session marker is present. This does not independently verify SU permissions.",
@@ -377,7 +374,7 @@ public class MainActivity extends Activity implements IReporter {
             showStatus("System on standby", "NOT ACTIVE",
                 mManagerCount == 0
                     ? "Tap Start to pick a bundled SU Manager for offline installation."
-                    : "Choose a compatible installed SU Manager before launching the original DFRoot engine.",
+                    : "Tap Start to select a Manager or install Classic / Next offline.",
                 R.attr.rmgWarning);
         } else {
             showStatus("Ready to launch", "READY",

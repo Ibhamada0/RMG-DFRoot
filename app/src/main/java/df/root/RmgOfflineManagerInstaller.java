@@ -45,6 +45,36 @@ public final class RmgOfflineManagerInstaller {
             .setNegativeButton("Cancel",null).show();
     }
 
+    /**
+     * Always offer an explicit offline choice when Start has no selected SU
+     * Manager. With existing managers, retain access to the installed chooser.
+     */
+    public static void chooseForStart(Activity activity, InstallListener listener,
+                                      boolean hasInstalledManager, Runnable selectInstalled) {
+        String[] options = hasInstalledManager
+            ? new String[]{
+                "Install KernelSU Classic (Samsung) - offline",
+                "Install KernelSU Next - offline",
+                "Select an installed Manager"
+              }
+            : new String[]{
+                "Install KernelSU Classic (Samsung) - offline",
+                "Install KernelSU Next - offline"
+              };
+        new AlertDialog.Builder(activity)
+            .setTitle("RMP / Choose your SU Manager")
+            .setMessage("No SU Manager is selected. Choose an offline installer. "
+                + "Android will request permission before installation, and "
+                + "RMP will continue your Start request only after verification.")
+            .setItems(options, (dialog, index) -> {
+                if (index == 0) install(activity, 1, listener);
+                else if (index == 1) install(activity, 0, listener);
+                else if (selectInstalled != null) selectInstalled.run();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
     public static void install(Activity activity, int index, InstallListener listener) {
         if (index < 0 || index >= NAMES.length) throw new IllegalArgumentException("Manager index");
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O &&

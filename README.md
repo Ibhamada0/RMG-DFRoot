@@ -60,6 +60,19 @@ copy the text, or delete it. The **Clear All** action asks for confirmation.
 - Logs from before this update are **not recoverable**. Removing the app or clearing
   app data erases these local records. Boot-initiated sessions are not captured.
 
+### Smart Start / Manager selection
+
+When **Start** is tapped without a selected SU Manager, a setup dialog
+immediately offers **KernelSU Classic (Samsung)** or **KernelSU Next** offline
+installation. This works even when RMP detects another eligible Manager but none
+is selected. If an installed Manager is available, a third choice selects it.
+
+After approving Android's installer and returning to RMP, the application checks
+the installed package and required `libksud.so` before continuing the
+original Start request. If the user cancels, fails installation or the Manager
+is incompatible, RMP does **not** start the root engine. A stale root session
+marker does not prevent opening the Manager chooser.
+
 ### RMP customizations
 
 The main screen is a fully redesigned **Premium Control Center** with a
